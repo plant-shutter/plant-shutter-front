@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
-import { Row, Col,Divider,Slider, Button,InputNumber,Space } from 'antd';
+import { Row, Col,Divider,Slider, Button,InputNumber,Select, Space  } from 'antd';
+
 
 class Setbox extends React.Component {
     constructor(props){
@@ -12,7 +13,7 @@ class Setbox extends React.Component {
             ID:this.props.info.ID,
             value:value
         }
-
+        console.log(data)
         axios({
             method: 'PUT', // 请求类型
             url: 'http://raspberrypi:9999/api/device/config', // 请求 url
@@ -22,23 +23,71 @@ class Setbox extends React.Component {
         })
     }
 
+     handleChange = (value) => {
+        let data = {
+            ID:this.props.info.ID,
+            value:parseInt(value)
+        }
+        console.log(data)
+        axios({
+            method: 'PUT', // 请求类型
+            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            data: data
+        }).then(response => {
+              console.log(response.data)
+        })
+      };
+
     render() {
-        
-        return(
-            <div>
-                <Row justify="space-around" align="middle">
-                    <Col span={1}> </Col>
-                    <Col span={18}>{this.props.info.name}</Col>
-                    <Col span={4}></Col>
-                    <Col span={1}></Col>
-                </Row>
-                <Row justify="space-around" align="middle">
-                    <Col span={1}> </Col>
-                    <Col span={22}><Slider max={this.props.info.maximum} min={this.props.info.minimum}   defaultValue={this.props.info.value} onAfterChange={this.Change} /></Col>
-                    <Col span={1}> </Col>
-                </Row>
-            </div> 
-        )
+        console.log(this.props.info)
+        if(this.props.info.isMenu!=true){
+            return(
+                <div>
+                    <Row justify="space-around" align="middle">
+                        <Col span={1}> </Col>
+                        <Col span={18}>{this.props.info.name}</Col>
+                        <Col span={4}></Col>
+                        <Col span={1}></Col>
+                    </Row>
+                    <Row justify="space-around" align="middle">
+                        <Col span={1}> </Col>
+                        <Col span={22}><Slider max={this.props.info.maximum} min={this.props.info.minimum}   defaultValue={this.props.info.value} onAfterChange={this.Change} /></Col>
+                        <Col span={1}> </Col>
+                    </Row>
+                </div> 
+            )
+        }else{
+            var defaultvalue=this.props.info.menuItems[this.props.info.value]
+            var data=[]
+            for(var key in this.props.info.menuItems){
+                let p={ value: key, label: this.props.info.menuItems[key] }
+                data.push(p)
+            }
+            return(
+                <div>
+                    <Row justify="space-around" align="middle">
+                        <Col span={1}> </Col>
+                        <Col span={18}>{this.props.info.name}</Col>
+                        <Col span={4}></Col>
+                        <Col span={1}></Col>
+                    </Row>
+                    <Row justify="space-around" align="middle">
+                        <Col span={1}> </Col>
+                        <Col span={23}>                        
+                            <Select
+                                defaultValue={defaultvalue}
+                                style={{ width: 120 }}
+                                onChange={this.handleChange}
+                                options={data}
+                                />
+                        </Col>
+
+                    </Row>
+
+                </div>
+            )
+            
+        }
 
     }
 }
@@ -56,12 +105,11 @@ class Parameters extends React.Component {
             this.setState({
                 para:json.data
             })
-            console.log(this.state)
         })
 
     }
     componentDidUpdate(){
-        console.log("did updata")
+      
 
     }
     
@@ -79,12 +127,8 @@ class Parameters extends React.Component {
                     </div> )}
 
                 </div>
- 
-
-                
             </div>
         )
-
     }
   }
   
