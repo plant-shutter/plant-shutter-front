@@ -4,100 +4,8 @@ import setting from "./icons/setting.svg"
 import logo from "./icons/logo.png"
 
 import React from "react";
-import axios from "axios";
 import { Image, Row, Col, Divider, Slider, Button, InputNumber, Select, Space, Progress, Typography, List, Popconfirm, message } from 'antd';
 const { Title } = Typography;
-
-
-class Setbox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = { para: [] }
-    }
-    Change = value => {
-        let data = {
-            ID: this.props.info.ID,
-            value: value
-        }
-        console.log(data)
-        axios({
-            method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
-            data: data
-        }).then(response => {
-            console.log(response.data)
-        })
-    }
-
-    handleChange = (value) => {
-        let data = {
-            ID: this.props.info.ID,
-            value: parseInt(value)
-        }
-        console.log(data)
-        axios({
-            method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
-            data: data
-        }).then(response => {
-            console.log(response.data)
-        })
-    };
-
-    render() {
-        console.log(this.props.info)
-        if (this.props.info.isMenu != true) {
-            return (
-                <div>
-                    <Row justify="space-around" align="middle">
-                        <Col span={1}> </Col>
-                        <Col span={18}>{this.props.info.name}</Col>
-                        <Col span={4}></Col>
-                        <Col span={1}></Col>
-                    </Row>
-                    <Row justify="space-around" align="middle">
-                        <Col span={1}> </Col>
-                        <Col span={22}><Slider max={this.props.info.maximum} min={this.props.info.minimum} defaultValue={this.props.info.value} onAfterChange={this.Change} /></Col>
-                        <Col span={1}> </Col>
-                    </Row>
-                </div>
-            )
-        } else {
-            var defaultvalue = this.props.info.menuItems[this.props.info.value]
-            var data = []
-            for (var key in this.props.info.menuItems) {
-                let p = { value: key, label: this.props.info.menuItems[key] }
-                data.push(p)
-            }
-            return (
-                <div>
-                    <Row justify="space-around" align="middle">
-                        <Col span={1}> </Col>
-                        <Col span={18}>{this.props.info.name}</Col>
-                        <Col span={4}></Col>
-                        <Col span={1}></Col>
-                    </Row>
-                    <Row justify="space-around" align="middle">
-                        <Col span={1}> </Col>
-                        <Col span={23}>
-                            <Select
-                                defaultValue={defaultvalue}
-                                style={{ width: 120 }}
-                                onChange={this.handleChange}
-                                options={data}
-                            />
-                        </Col>
-
-                    </Row>
-
-                </div>
-            )
-
-        }
-
-    }
-}
-
 
 class Home extends React.Component {
     constructor(props) {
@@ -119,11 +27,15 @@ class Home extends React.Component {
 
 
     }
+    jumpToProjects() {
 
+        window.location.href = window.location.origin + '/#/Projects';
+
+    }
     render() {
         return (
             <div>
-                <Row style={{position:"fixed" ,zIndex:"1",top:"0px",left:"0px"}}>
+                <Row style={{position:"fixed" ,zIndex:"1",top:"0px",left:"0px",width:"100%"}}>
                     <Col span={24}>
                         <div style={{ backgroundColor: "#000000", padding: "1%" }}>
 
@@ -208,11 +120,11 @@ class Home extends React.Component {
                         <Row justify="space-around" align="middle"  >
                             <Col span={1}></Col>
                             <Col span={22} style={{ display: 'flex' }}>
-                                <div style={{ width: "100%", display: "flex", border: "1px solid #9A9A9A", borderRadius: "10%" }}>
+                                <div style={{ width: "100%", display: "flex", border: "1px solid #9A9A9A", borderRadius: "10%" }} >
                                     <Row >
                                         <Col span={24}>&nbsp; </Col>
                                         <Col span={5}></Col>
-                                        <Col span={14}>  <img src={shooting} style={{ width: "100%", height: "100%", display: "flex" }} /></Col>
+                                        <Col span={14}>  <img src={shooting} style={{ width: "100%", height: "100%", display: "flex" }} onClick={this.jumpToProjects}  /></Col>
                                         <Col span={5}></Col>
                                         <Col span={24} ><Typography style={{ textAlign: "center" }}>项目拍摄</Typography></Col>
                                     </Row>
