@@ -6,6 +6,9 @@ import ViewFinder from "./components/viewFinder";
 import Projects from "./components/projects";
 import Album from "./components/album";
 import AlbumType from "./components/albumType";
+import VideoList from "./components/videoList";
+import ImageList from "./components/imageList";
+
 
 import { Routes, Route, Link } from "react-router-dom";
 import { globalProjectDataContext, globalProjectData, globalProjectDataChangeName } from "./components/globalProjectData"
@@ -32,7 +35,8 @@ export default class App extends Component {
             <Route path="/ParamSetting/" element={<ParamSetting />} />
             <Route path="/Album" element={<Album />} />
             <Route path="/AlbumType" element={<AlbumType />} />
-            
+            <Route path="/VideoList" element={<VideoList />} />
+            <Route path="/ImageList" element={<ImageList />} />
           </Routes>
         </Provider>
 

@@ -9,8 +9,6 @@ import { globalProjectDataContext } from "./globalProjectData"
 import setting from "./icons/setting.svg"
 const { Title } = Typography;
 
-
-
 class Recording extends React.Component {
     constructor(props) {
         super(props)
@@ -25,7 +23,6 @@ class Recording extends React.Component {
 
     render() {
         this.W=document.documentElement.clientWidth/24*16
-
         return (
             <div style={{ margin: "0px", padding: "0px" ,marginTop:"20%"}}>
                 <Row>
@@ -33,7 +30,6 @@ class Recording extends React.Component {
                     <Col span={16}> <VerifyStopRecord ref="verify" success={this.StopRecording} width={this.W}></VerifyStopRecord></Col>
                     <Col span={4}></Col>
                 </Row>
-               
             </div>
         )
     }
@@ -96,26 +92,18 @@ class ViewFinder extends React.Component {
     }
     componentDidUpdate() {
 
-
     }
     jumpToProjects() {
-
         window.location.href = window.location.origin + '/#/Projects';
-
     }
     jumpToHome() {
-
         window.location.href = window.location.origin + '/#/Home';
-
     }
     jumpToParamSetting() {
-
         window.location.href = window.location.origin + '/#/ParamSetting';
-
     }
 
-
-    startREC = (name) => {
+    startREC = () => {
         let data = {
             name: this.state.UImsg.name,
             running: true
@@ -131,8 +119,7 @@ class ViewFinder extends React.Component {
             this.setState({
                 UImsg: UImsg
             })
-            console.log("startREC")
-            console.log(this.state)
+
         }).catch((response) => {
             
         });

@@ -36,9 +36,7 @@ class Home extends React.Component {
 
     }
     jumpToAlbum() {
-
         window.location.href = window.location.origin + '/#/Album';
-
     }
     
 

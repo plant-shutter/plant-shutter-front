@@ -1,105 +1,78 @@
 import logo from "./icons/logo.png"
 import axios from "axios";
+import video from "./icons/video.svg"
+import photo from "./icons/photo.svg"
+import rightArray from "./icons/rightArray.svg"
 import React from "react";
 import { globalProjectDataContext } from "./globalProjectData"
 import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
 
-
-class AlbumLists extends React.Component {
-    constructor(props) {
-        super(props)
-        var date = new Date(this.props.info.createdAt);
-
-        // 提取所需的年、月、日、小时、分钟和秒
-        var year = date.getFullYear();
-        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-        var day = ("0" + date.getDate()).slice(-2);
-        var hour = ("0" + date.getHours()).slice(-2);
-        var minute = ("0" + date.getMinutes()).slice(-2);
-        var second = ("0" + date.getSeconds()).slice(-2);
-
-        // 构造最终的时间字符串
-        var outputTime = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
-        this.state = { date: outputTime }
-
-    }
-
-
-
-    render() {
-
-        return (
-            <div style={{ margin: "0px", padding: "0px" }}>
-                <Row style={{ margin: "0px", padding: "0px" }} justify="space-around" align="middle" >
-                    <Col span={22} style={{ margin: "0px", padding: "0px" }} onClick={() => this.props.jumpToProjectAlbum(this.props.info.name)}>
-                        <Row>
-                            <Col span={24}>
-                                <Row>
-                                    <Col span={2}></Col>
-                                    <Col span={15}> <Title style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis" }} level={5}><div style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.props.info.name}</div></Title> </Col>
-
-                                    <Col span={5}></Col>
-
-                                    <Col span={2}></Col>
-                                </Row>
-
-                            </Col>
-                            <Col span={24}>
-                                <Row>
-                                    <Col span={1}></Col>
-                                    <Col span={12}> <Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.date}</Typography> </Col>
-                                    <Col span={2}></Col>
-                                    <Col span={9}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.props.info.diskUsage}</Typography> </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-
-                    </Col>
-                    <Col span={2}> <Button style={{ margin: "0px", padding: "0px" }} size="small" onClick={this.showModal} type="link" danger >清空</Button></Col>
-                </Row>
-                <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
-
-
-            </div>
-        )
-    }
-}
-
 class AlbumType extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { albumLists: [] }
+        this.state = {
+            video: {
+                total: 0,
+                totalSize: ""
+            }, photo: {
+                total: 0,
+                totalSize: ""
+            }
+        }
     }
     componentDidMount() {
-        fetch("http://raspberrypi:9999/api/project")
+        fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
-
+                if(json.status!="success"){
+                    window.location.href = window.location.origin + '/#/Album';
+                }
                 this.setState({
-                    albumLists: json.data
+                    video: json.data
                 })
+
+            }).catch((response) => {
+                window.location.href = window.location.origin + '/#/Album';
+            })
+        fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/image?page=1&page_size=99999999")
+            .then(res => res.json())
+            .then(json => {
+                if(json.status!="success"){
+                    window.location.href = window.location.origin + '/#/Album';
+                }
+                this.setState({
+                    photo: json.data
+                })
+
+            }).catch((response) => {
+                window.location.href = window.location.origin + '/#/Album';
             })
 
     }
     componentDidUpdate() {
 
-
     }
 
-    jumpToProjectAlbum = (name) => {
-        console.log(name)
+    jumpToProjectAlbums = () => {
+        window.location.href = window.location.origin + '/#/Album';
     };
     jumpToHome() {
 
         window.location.href = window.location.origin + '/#/Home';
-
     }
+
+    jumpToVideoList = () => {
+        window.location.href = window.location.origin + '/#/VideoList';
+    };
+
+    jumpToImageList = () => {
+        window.location.href = window.location.origin + '/#/ImageList';
+    };
 
 
     render() {
-
         return (
             <div>
                 <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>
@@ -115,22 +88,62 @@ class AlbumType extends React.Component {
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col span={20}><Typography style={{ textAlign: "left", color: "#FFFFFF" }}><b>项目拍摄</b></Typography></Col>
-                                <Col span={2}></Col>
+                                <Col span={22} style={{ display: 'flex' }} >
+                                    <div style={{ width: "5%" }}>
+                                        <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
+                                    </div>
+                                    <Typography onClick={this.jumpToProjectAlbums} style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>相册浏览</Typography>
+                                    <div style={{ width: "5%" }}>
+                                        <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
+                                    </div>
+                                    <Typography style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>{this.context.name}</Typography>
+                                </Col>
                             </Row>
                         </div>
                     </Col>
                 </Row>
 
 
-                <div style={{ margin: "0px", padding: "0px", marginTop: "10%",}}>
-                    {this.state.albumLists.map(albumLists =>
-                        <div style={{ margin: "0px", padding: "0px" }} key={albumLists.name}>
-                            <AlbumLists info={albumLists} jumpToProjectAlbum={this.jumpToProjectAlbum}></AlbumLists>
-                        </div>)}
+                <div style={{ margin: "0px", padding: "0px", marginTop: "10%", }}>
+
+                    <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
+                    <Row>
+                        <Col onClick={this.jumpToVideoList} span={5} style={{ margin: "0", padding: "0", paddingLeft: "2%" }} >
+                            <div style={{ width: "75%" }}>
+                                <img src={video} style={{ width: "100%", height: "100%", display: "flex" }} />
+                            </div>
+                        </Col>
+                        <Col onClick={this.jumpToVideoList} span={17}>
+                            <Row>
+                                <Col span={24}><Title style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", marginTop: "1%" }} level={5}><div style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>预览视频</div></Title>    </Col>
+                            </Row>
+                            <Row>
+                                <Col span={24}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.video.total} 个项目 - {this.state.video.totalSize}</Typography> </Col>
+                            </Row>
+
+
+                        </Col>
+                        <Col span={2}> <Button style={{ margin: "0px", padding: "0px", marginTop: "50%" }} size="small" onClick={this.showModal} type="link" danger >清空</Button></Col>
+                    </Row>
+                    <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
+                    <Row>
+                        <Col onClick={this.jumpToImageList} span={5} style={{ margin: "0", padding: "0", paddingTop: "3%", paddingLeft: "3%", paddingBottom: "3%" }} >
+                            <div style={{ width: "50%" }}>
+                                <img src={photo} style={{ width: "100%", height: "100%", display: "flex" }} />
+                            </div>
+                        </Col>
+                        <Col onClick={this.jumpToImageList} span={17}>
+                            <Row>
+                                <Col span={24}><Title style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", marginTop: "1%" }} level={5}><div style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>图片序列</div></Title>  </Col>
+                            </Row>
+                            <Row>
+                                <Col span={24}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.photo.total} 张图片 - {this.state.photo.totalSize}</Typography> </Col>
+                            </Row>
+                        </Col>
+                        <Col span={2}> <Button style={{ margin: "0px", padding: "0px", marginTop: "50%" }} size="small" onClick={this.showModal} type="link" danger >清空</Button></Col>
+                    </Row>
+                    <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
                 </div>
-
-
             </div>
         )
     }

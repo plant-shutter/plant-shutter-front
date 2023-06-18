@@ -1,6 +1,6 @@
 import logo from "./icons/logo.png"
-import axios from "axios";
 import React from "react";
+import rightArray from "./icons/rightArray.svg"
 import { globalProjectDataContext } from "./globalProjectData"
 import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
@@ -24,8 +24,6 @@ class AlbumLists extends React.Component {
         this.state = { date: outputTime }
 
     }
-
-
 
     render() {
 
@@ -114,8 +112,16 @@ class Album extends React.Component {
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col span={20}><Typography style={{ textAlign: "left", color: "#FFFFFF" }}><b>项目拍摄</b></Typography></Col>
-                                <Col span={2}></Col>
+                                <Col span={22} style={{ display: 'flex' }} >
+
+                                    <div style={{ width: "5%" }}>
+                                        <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
+                                    </div>
+                                    <Typography  style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>相册浏览</Typography>
+
+     
+
+                                </Col>
                             </Row>
                         </div>
                     </Col>
