@@ -2,7 +2,8 @@ import React from "react";
 import axios from "axios";
 import { Row, Col, Divider, Slider, Button, InputNumber, Select, Space, Typography } from 'antd';
 import logo from "./icons/logo.png"
-
+import rightArray from "./icons/rightArray.svg"
+import { globalProjectDataContext } from "./globalProjectData"
 const { Title } = Typography;
 class Setbox extends React.Component {
     constructor(props) {
@@ -21,7 +22,7 @@ class Setbox extends React.Component {
             url: 'http://raspberrypi:9999/api/device/config', // 请求 url
             data: datas
         }).then(response => {
-            console.log(response.data)
+            // console.log(response.data)
         })
     }
 
@@ -37,13 +38,13 @@ class Setbox extends React.Component {
             url: 'http://raspberrypi:9999/api/device/config', // 请求 url
             data: datas
         }).then(response => {
-            console.log(response.data)
+            // console.log(response.data)
         })
     };
 
 
     render() {
-        console.log(this.props.info)
+
         if (this.props.info.isMenu != true) {
             return (
                 <div>
@@ -96,11 +97,12 @@ class Setbox extends React.Component {
     }
 }
 
-
 class ParamSetting extends React.Component {
+
     constructor(props) {
         super(props)
         this.state = { para: [] }
+
     }
     componentDidMount() {
         fetch("http://raspberrypi:9999/api/device/config")
@@ -109,12 +111,15 @@ class ParamSetting extends React.Component {
                 this.setState({
                     para: json.data
                 })
+                if (this.context.name == "") {
+                    window.location.href = window.location.origin + '/#/Home';
+                }
+            }).catch((response) => {
+                window.location.href = window.location.origin + '/#/Home';
             })
 
     }
     componentDidUpdate() {
-
-
     }
     testjump() {
 
@@ -126,17 +131,29 @@ class ParamSetting extends React.Component {
         window.location.href = window.location.origin + '/#/Home';
 
     }
+    jumpToViewFinder() {
+
+        window.location.href = window.location.origin + '/#/ViewFinder';
+
+    }
+
+    jumpToProjects() {
+
+        window.location.href = window.location.origin + '/#/Projects';
+
+    }
+
     frameRateChange = (value) => {
-        console.log(value)
+        // console.log(value)
     };
 
     render() {
-        this.W = document.documentElement.clientWidth
+
         return (
             <div>
-                <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px",width: "100%" }}>
+                <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>
                     <Col span={24}>
-                        <div style={{ backgroundColor: "#000000", padding: "1%",width: "100%" }}>
+                        <div style={{ backgroundColor: "#000000", padding: "1%", width: "100%" }}>
                             <Row justify="space-around" align="middle" >
                                 <Col span={2} style={{ display: 'flex' }} onClick={this.jumpToHome}>
                                     <Row justify="space-around" align="middle"  >
@@ -147,9 +164,22 @@ class ParamSetting extends React.Component {
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col span={20}><Typography style={{ textAlign: "center", color: "#FFFFFF" }}>plant-shutter</Typography></Col>
-                                <Col span={2}></Col>
+                                <Col span={22} style={{ display: 'flex' }} >
+                                    <div style={{ width: "5%" }}>
+                                        <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
+                                    </div>
+                                    <Typography onClick={this.jumpToProjects}  style={{ textAlign: "left", color: "#FFFFFF", fontSize: "16px" }}>项目拍摄</Typography>
+                                    <div style={{ width: "5%" }}>
+                                        <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
+                                    </div>
+                                    <Typography onClick={this.jumpToViewFinder} style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>{this.context.name}</Typography>
 
+                                    <div style={{ width: "5%" }}>
+                                        <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
+                                    </div>
+                                    <Typography style={{ textAlign: "left", color: "#FFFFFF", fontSize: "16px" }}>参数设置</Typography>
+
+                                </Col>
                             </Row>
 
                         </div>
@@ -184,13 +214,13 @@ class ParamSetting extends React.Component {
                     <Col span={4}><Button style={{ color: "#00C2FF" }} size="small" onClick={this.testjump} >重置</Button></Col>
 
                 </Row>
-                <Divider style={{ margin: "0", marginTop: "1%",marginBottom:"3%" }} orientation="left"></Divider>
+                <Divider style={{ margin: "0", marginTop: "1%", marginBottom: "3%" }} orientation="left"></Divider>
 
                 <Row justify="space-around" align="middle" >
                     <Col span={12}>
                         <Row justify="space-around" align="middle">
-                        <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left" ,margin:"2%"}} >帧率</Col>
+                            <Col span={4}></Col>
+                            <Col span={20} style={{ textAlign: "left", margin: "2%" }} >帧率</Col>
                             <Col span={2}></Col>
                             <Col span={22} justify="space-around" >
                                 <InputNumber min={1} max={10} defaultValue={3} onChange={this.frameRateChange} />
@@ -199,8 +229,8 @@ class ParamSetting extends React.Component {
                     </Col>
                     <Col span={12}>
                         <Row justify="space-around" align="middle">
-                        <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left",margin:"2%"}}>视频分段预览(秒)</Col>
+                            <Col span={4}></Col>
+                            <Col span={20} style={{ textAlign: "left", margin: "2%" }}>视频分段预览(秒)</Col>
                             <Col span={2}></Col>
                             <Col span={22} justify="space-around" >
                                 <InputNumber min={1} max={100} defaultValue={10} onChange={this.frameRateChange} />
@@ -216,8 +246,8 @@ class ParamSetting extends React.Component {
                 <Row justify="space-around" align="middle">
                     <Col span={12}>
                         <Row justify="space-around" align="middle">
-                        <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left",margin:"2%"}} >拍摄约(天)</Col>
+                            <Col span={4}></Col>
+                            <Col span={20} style={{ textAlign: "left", margin: "2%" }} >拍摄约(天)</Col>
                             <Col span={2}></Col>
                             <Col span={22} justify="space-around">
                                 <InputNumber min={1} max={10} defaultValue={3} onChange={this.frameRateChange} />
@@ -227,7 +257,7 @@ class ParamSetting extends React.Component {
                     <Col span={12}>
                         <Row justify="space-around" align="middle">
                             <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left",margin:"2%"}}>视频长约(分)</Col>
+                            <Col span={20} style={{ textAlign: "left", margin: "2%" }}>视频长约(分)</Col>
                             <Col span={2}></Col>
                             <Col span={22} justify="space-around" >
                                 <InputNumber min={1} max={100} defaultValue={10} onChange={this.frameRateChange} />
@@ -237,10 +267,10 @@ class ParamSetting extends React.Component {
                 </Row>
 
 
-                <Divider style={{ margin: "0", marginTop: "3%" ,marginBottom:"3%"}} orientation="left"></Divider>
+                <Divider style={{ margin: "0", marginTop: "3%", marginBottom: "3%" }} orientation="left"></Divider>
                 <Row style={{ padding: "5%" }} >
                     <Col span={6}></Col>
-                    <Col span={12} style={{ borderRadius: "10px", background: "#E5F4FF" }}>
+                    <Col span={12} style={{ borderRadius: "10px", background: "#E5F4FF" }} onClick={this.jumpToViewFinder}>
                         <div style={{ textAlign: "center", whiteSpace: "nowrap", margin: "5%", color: "#1684FC", background: "#E5F4FF" }}><b>设置完成准备拍摄</b></div>
                     </Col>
                     <Col span={6}></Col>
@@ -257,5 +287,5 @@ class ParamSetting extends React.Component {
         )
     }
 }
-
+ParamSetting.contextType = globalProjectDataContext
 export default ParamSetting;

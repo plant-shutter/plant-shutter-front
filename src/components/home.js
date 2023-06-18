@@ -20,7 +20,10 @@ class Home extends React.Component {
                 this.setState({
                     dist: json.data
                 })
-            })
+            }).catch((response) => {
+
+                console.log(response);
+            });
 
     }
     componentDidUpdate() {
@@ -32,7 +35,15 @@ class Home extends React.Component {
         window.location.href = window.location.origin + '/#/Projects';
 
     }
+    jumpToAlbum() {
+
+        window.location.href = window.location.origin + '/#/Album';
+
+    }
+    
+
     render() {
+
         return (
             <div>
                 <Row style={{position:"fixed" ,zIndex:"1",top:"0px",left:"0px",width:"100%"}}>
@@ -71,7 +82,7 @@ class Home extends React.Component {
                     <Divider style={{ margin: "0" }} orientation="left">存储</Divider>
                     <Row>
                         <Col span={1}></Col>
-                        <Col span={5}><Progress type="circle" percent={this.state.dist.usedPercent} width={70} /></Col>
+                        <Col span={5}><Progress type="circle" percent={this.state.dist.usedPercent} size={70} /></Col>
                         <Col span={2}></Col>
                         <Col span={11}>
                             <Space direction="vertical" size="small" style={{ display: 'flex' }}>
@@ -83,7 +94,7 @@ class Home extends React.Component {
 
                                 <Row >
                                     <Col style={{ margin: "0" }} span={24}>
-                                        <Title style={{ margin: "0" }} level={5}>剩余{this.state.dist.used}，共{this.state.dist.total}</Title>
+                                        <Title style={{ margin: "0" }} level={5}>剩余{this.state.dist.free}，共{this.state.dist.total}</Title>
                                     </Col>
                                 </Row>
                             </Space>
@@ -105,7 +116,7 @@ class Home extends React.Component {
                                     <Row >
                                         <Col span={24}>&nbsp; </Col>
                                         <Col span={5}></Col>
-                                        <Col span={14}>  <img src={album} style={{ width: "100%", height: "100%", display: "flex" }} /></Col>
+                                        <Col span={14}>  <img src={album} style={{ width: "100%", height: "100%", display: "flex" }} onClick={this.jumpToAlbum}  /></Col>
                                         <Col span={5}></Col>
                                         <Col span={24} ><Typography style={{ textAlign: "center" }}>相册浏览</Typography></Col>
                                     </Row>

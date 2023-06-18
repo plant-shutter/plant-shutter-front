@@ -1,14 +1,15 @@
 import logo from "./icons/logo.png"
 import axios from "axios";
 import React from "react";
+import { globalProjectDataContext } from "./globalProjectData"
+import rightArray from "./icons/rightArray.svg"
 import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
+
 
 class ProjectLists extends React.Component {
     constructor(props) {
         super(props)
-
-
         var date = new Date(this.props.info.createdAt);
 
         // 提取所需的年、月、日、小时、分钟和秒
@@ -18,28 +19,25 @@ class ProjectLists extends React.Component {
         var hour = ("0" + date.getHours()).slice(-2);
         var minute = ("0" + date.getMinutes()).slice(-2);
         var second = ("0" + date.getSeconds()).slice(-2);
-
         // 构造最终的时间字符串
         var outputTime = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
         this.state = { date: outputTime }
-
 
     }
 
 
     render() {
-        console.log(this.props.info)
         return (
             <div style={{ margin: "0px", padding: "0px" }}>
                 <Row style={{ margin: "0px", padding: "0px" }} justify="space-around" align="middle" >
-                    <Col span={22} style={{ margin: "0px", padding: "0px" }}>
+                    <Col span={22} style={{ margin: "0px", padding: "0px" }} onClick={() =>this.props.jumpToViewFinder(this.props.info.name)}>
                         <Row>
                             <Col span={24}>
                                 <Row>
                                     <Col span={2}></Col>
                                     <Col span={15}> <Title style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis" }} level={5}><div style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis",whiteSpace:"nowrap"  }}>{this.props.info.name}</div></Title> </Col>
                                     
-                                    {!this.props.running ? <Col span={5}><Typography style={{ margin: "0", textAlign: "left", color: "red" }} >正在拍摄</Typography></Col> : <Col span={5}></Col>}
+                                    {this.props.running ? <Col span={5}><Typography style={{ margin: "0", textAlign: "left", color: "red" }} >正在拍摄</Typography></Col> : <Col span={5}></Col>}
                                 
                                     <Col span={2}></Col>
                                 </Row>
@@ -53,18 +51,14 @@ class ProjectLists extends React.Component {
                                     <Col span={9}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.props.info.diskUsage}</Typography> </Col>
                                 </Row></Col>
                         </Row>
-
                     </Col>
                     <Col span={2}> <Button style={{ margin: "0px", padding: "0px" }} size="small" onClick={this.showModal} type="link" danger >删除</Button></Col>
                 </Row>
                 <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
-
-
             </div>
         )
     }
 }
-
 
 class projects extends React.Component {
 
@@ -80,7 +74,10 @@ class projects extends React.Component {
                 this.setState({
                     projectsList: json.data
                 })
-            })
+            }).catch((response) => {
+
+                console.log(response);
+            });
 
     }
     componentDidUpdate() {
@@ -94,6 +91,13 @@ class projects extends React.Component {
     jumpToHome() {
 
         window.location.href = window.location.origin + '/#/Home';
+
+    }
+    jumpToViewFinder=(name) =>{
+
+        this.context.setprojectname(name)
+
+        window.location.href = window.location.origin + '/#/ViewFinder';
 
     }
 
@@ -120,18 +124,18 @@ class projects extends React.Component {
             }
 
         }
-        console.log(projectdata)
+  
 
         axios({
             method: 'POST', // 请求类型
             url: 'http://raspberrypi:9999/api/project', // 请求 url
             data: projectdata
         }).then(response => {
-            console.log(response.data)
-            
-            window.location.href = window.location.origin + '/#/ParamSetting/'+response.data.data.name;
+
+            this.context.setprojectname(response.data.data.name)
+            window.location.href = window.location.origin + '/#/ParamSetting/';
         }).catch((response) => {
-            console.log(this.props.info)
+        
        
             notification.open({
                 message: '新建失败',
@@ -141,7 +145,7 @@ class projects extends React.Component {
 
                 },
             });
-            console.log(response);
+   
         });
     };
 
@@ -193,8 +197,18 @@ class projects extends React.Component {
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col span={20}><Typography style={{ textAlign: "left", color: "#FFFFFF" }}><b>项目拍摄</b></Typography></Col>
-                                <Col span={2}></Col>
+
+
+                                <Col span={22} style={{ display: 'flex' }} >
+
+                                    <div style={{ width: "5%" }}>
+                                        <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
+                                    </div>
+                                    <Typography onClick={this.jumpToProjects} style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>项目拍摄</Typography>
+
+     
+
+                                </Col>
                             </Row>
                         </div>
                     </Col>
@@ -214,7 +228,7 @@ class projects extends React.Component {
                 <div style={{ margin: "0px", padding: "0px" }}>
                     {this.state.projectsList.map(projectsList =>
                         <div style={{ margin: "0px", padding: "0px" }} key={projectsList.name}>
-                            <ProjectLists info={projectsList}></ProjectLists>
+                            <ProjectLists info={projectsList} jumpToViewFinder={this.jumpToViewFinder}></ProjectLists>
                         </div>)}
                 </div>
 
@@ -223,5 +237,5 @@ class projects extends React.Component {
         )
     }
 }
-
+projects.contextType=globalProjectDataContext
 export default projects;
