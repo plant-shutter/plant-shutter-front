@@ -22,7 +22,7 @@ class Setbox extends React.Component {
             url: 'http://raspberrypi:9999/api/device/config', // 请求 url
             data: datas
         }).then(response => {
-            // console.log(response.data)
+          
         })
     }
 
@@ -38,7 +38,7 @@ class Setbox extends React.Component {
             url: 'http://raspberrypi:9999/api/device/config', // 请求 url
             data: datas
         }).then(response => {
-            // console.log(response.data)
+            
         })
     };
 
@@ -118,6 +118,21 @@ class ParamSetting extends React.Component {
                 window.location.href = window.location.origin + '/#/Home';
             })
 
+        fetch("http://raspberrypi:9999/api/project/running")
+            .then(res => res.json())
+            .then(json => {
+                if (json.data == undefined) {
+
+                } else {
+                    window.location.href = window.location.origin + '/#/Home';
+                }
+
+
+            }).catch((response) => {
+
+                
+            });
+
     }
     componentDidUpdate() {
     }
@@ -144,7 +159,7 @@ class ParamSetting extends React.Component {
     }
 
     frameRateChange = (value) => {
-        // console.log(value)
+    
     };
 
     render() {
@@ -168,7 +183,7 @@ class ParamSetting extends React.Component {
                                     <div style={{ width: "5%" }}>
                                         <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
                                     </div>
-                                    <Typography onClick={this.jumpToProjects}  style={{ textAlign: "left", color: "#FFFFFF", fontSize: "16px" }}>项目拍摄</Typography>
+                                    <Typography onClick={this.jumpToProjects} style={{ textAlign: "left", color: "#FFFFFF", fontSize: "16px" }}>项目拍摄</Typography>
                                     <div style={{ width: "5%" }}>
                                         <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
                                     </div>

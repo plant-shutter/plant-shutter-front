@@ -27,18 +27,19 @@ class ProjectLists extends React.Component {
 
 
     render() {
+
         return (
             <div style={{ margin: "0px", padding: "0px" }}>
                 <Row style={{ margin: "0px", padding: "0px" }} justify="space-around" align="middle" >
-                    <Col span={22} style={{ margin: "0px", padding: "0px" }} onClick={() =>this.props.jumpToViewFinder(this.props.info.name)}>
+                    <Col span={22} style={{ margin: "0px", padding: "0px" }} onClick={() => this.props.jumpToViewFinder(this.props.info.name)}>
                         <Row>
                             <Col span={24}>
                                 <Row>
                                     <Col span={2}></Col>
-                                    <Col span={15}> <Title style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis" }} level={5}><div style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis",whiteSpace:"nowrap"  }}>{this.props.info.name}</div></Title> </Col>
-                                    
-                                    {this.props.running ? <Col span={5}><Typography style={{ margin: "0", textAlign: "left", color: "red" }} >正在拍摄</Typography></Col> : <Col span={5}></Col>}
-                                
+                                    <Col span={15}> <Title style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis" }} level={5}><div style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.props.info.name}</div></Title> </Col>
+
+                                    {this.props.info.running ? <Col span={5}><Typography style={{ margin: "0", textAlign: "left", color: "red" }} >正在拍摄</Typography></Col> : <Col span={5}></Col>}
+
                                     <Col span={2}></Col>
                                 </Row>
 
@@ -46,9 +47,9 @@ class ProjectLists extends React.Component {
                             <Col span={24}>
                                 <Row>
                                     <Col span={1}></Col>
-                                    <Col span={12}> <Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.date}</Typography> </Col>
+                                    <Col span={12}> <Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.date} - {this.props.info.diskUsage}</Typography> </Col>
                                     <Col span={2}></Col>
-                                    <Col span={9}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.props.info.diskUsage}</Typography> </Col>
+                                    <Col span={9}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} ></Typography> </Col>
                                 </Row></Col>
                         </Row>
                     </Col>
@@ -64,7 +65,7 @@ class projects extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { visible: false, newProjectName: "", projectsList: [] }
+        this.state = { visible: false, newProjectName: "", projectsList: [], running: true }
     }
     componentDidMount() {
         fetch("http://raspberrypi:9999/api/project")
@@ -76,7 +77,26 @@ class projects extends React.Component {
                 })
             }).catch((response) => {
 
-                console.log(response);
+               
+            });
+
+        fetch("http://raspberrypi:9999/api/project/running")
+            .then(res => res.json())
+            .then(json => {
+                if (json.data == undefined) {
+                    this.setState({
+                        running: false
+                    })
+                } else {
+                    this.setState({
+                        running: true
+                    })
+                }
+
+
+            }).catch((response) => {
+
+            
             });
 
     }
@@ -93,7 +113,7 @@ class projects extends React.Component {
         window.location.href = window.location.origin + '/#/Home';
 
     }
-    jumpToViewFinder=(name) =>{
+    jumpToViewFinder = (name) => {
 
         this.context.setprojectname(name)
 
@@ -124,7 +144,7 @@ class projects extends React.Component {
             }
 
         }
-  
+
 
         axios({
             method: 'POST', // 请求类型
@@ -133,10 +153,25 @@ class projects extends React.Component {
         }).then(response => {
 
             this.context.setprojectname(response.data.data.name)
-            window.location.href = window.location.origin + '/#/ParamSetting/';
+            if (this.state.running == false) {
+                window.location.href = window.location.origin + '/#/ParamSetting/';
+            } else {
+                fetch("http://raspberrypi:9999/api/project")
+                    .then(res => res.json())
+                    .then(json => {
+
+                        this.setState({
+                            projectsList: json.data
+                        })
+                    }).catch((response) => {
+
+                       
+                    });
+            }
+
         }).catch((response) => {
-        
-       
+
+
             notification.open({
                 message: '新建失败',
                 description:
@@ -145,7 +180,7 @@ class projects extends React.Component {
 
                 },
             });
-   
+
         });
     };
 
@@ -206,7 +241,7 @@ class projects extends React.Component {
                                     </div>
                                     <Typography onClick={this.jumpToProjects} style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>项目拍摄</Typography>
 
-     
+
 
                                 </Col>
                             </Row>
@@ -237,5 +272,5 @@ class projects extends React.Component {
         )
     }
 }
-projects.contextType=globalProjectDataContext
+projects.contextType = globalProjectDataContext
 export default projects;

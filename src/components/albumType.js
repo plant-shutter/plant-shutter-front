@@ -26,6 +26,7 @@ class AlbumType extends React.Component {
         fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
+            
                 if(json.status!="success"){
                     window.location.href = window.location.origin + '/#/Album';
                 }
@@ -39,6 +40,7 @@ class AlbumType extends React.Component {
         fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/image?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
+               
                 if(json.status!="success"){
                     window.location.href = window.location.origin + '/#/Album';
                 }

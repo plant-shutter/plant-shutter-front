@@ -161,7 +161,7 @@ export default class VerifyStopRecord extends React.Component<ReactSimpleVerifyP
       this.isSuccess = true
       this.props.success && this.props.success()
     }
-    // console.log(this.x2)
+  
     this.setState({
       diff
     })

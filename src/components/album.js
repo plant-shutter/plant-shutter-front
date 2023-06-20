@@ -80,7 +80,7 @@ class Album extends React.Component {
                 })
             }).catch((response) => {
 
-                console.log(response);
+                
             });
 
     }

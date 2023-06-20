@@ -21,7 +21,6 @@ class VideoEntries extends React.Component {
         // 构造最终的时间字符串
         var outputTime = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
         this.state = { date: outputTime }
-
     }
 
     render() {
@@ -42,7 +41,7 @@ class VideoEntries extends React.Component {
                         </Row>
                         <Row>
                             <Col span={24}>
-                                <Col span={24}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.date}</Typography> </Col>
+                                <Col span={24}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.date} - {this.props.info.size}</Typography> </Col>
                             </Col>
                         </Row>
                     </Col>
@@ -64,7 +63,6 @@ class VideoList extends React.Component {
                 video: []
             }
         }
-
     }
     componentDidMount() {
 
@@ -102,6 +100,7 @@ class VideoList extends React.Component {
 
 
     render() {
+  
         return (
             <div>
                 <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>

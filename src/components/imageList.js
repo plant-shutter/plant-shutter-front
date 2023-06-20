@@ -119,7 +119,7 @@ class ImageList extends React.Component {
         })
     };
     render() {
-        console.log(this.state)
+      
         return (
             <div>
                 <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>

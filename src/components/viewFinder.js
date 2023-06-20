@@ -1,7 +1,7 @@
 import VerifyStopRecord from "./verifyStopRecord.tsx"
 import React from "react";
 import axios from "axios";
-import { Row, Col, Divider, Typography } from 'antd';
+import { Row, Col, Divider, Typography,message } from 'antd';
 import logo from "./icons/logo.png"
 import rightArray from "./icons/rightArray.svg"
 import reset from "./icons/reset.svg"
@@ -22,9 +22,9 @@ class Recording extends React.Component {
     };
 
     render() {
-        this.W=document.documentElement.clientWidth/24*16
+        this.W = document.documentElement.clientWidth / 24 * 16
         return (
-            <div style={{ margin: "0px", padding: "0px" ,marginTop:"20%"}}>
+            <div style={{ margin: "0px", padding: "0px", marginTop: "20%" }}>
                 <Row>
                     <Col span={4}></Col>
                     <Col span={16}> <VerifyStopRecord ref="verify" success={this.StopRecording} width={this.W}></VerifyStopRecord></Col>
@@ -65,7 +65,7 @@ class ViewFinder extends React.Component {
                 video: {
                     fps: 24
                 }
-            }
+            }, anotherRunning: true
         }
     }
     componentDidMount() {
@@ -80,9 +80,35 @@ class ViewFinder extends React.Component {
         fetch("http://raspberrypi:9999/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
+
                 this.setState({
                     UImsg: json.data
                 })
+
+                fetch("http://raspberrypi:9999/api/project/running")
+                    .then(res => res.json())
+                    .then(jsonrunning => {
+                        if (jsonrunning.data == undefined) {
+                            this.setState({
+                                anotherRunning: false
+                            })
+                        } else {
+                            if (jsonrunning.data.name == json.data.name) {
+                                this.setState({
+                                    anotherRunning: false
+                                })
+                            } else {
+                                this.setState({
+                                    anotherRunning: true
+                                })
+                            }
+                        }
+
+
+                    }).catch((response) => {
+
+                   
+                    });
 
             }).catch((response) => {
                 window.location.href = window.location.origin + '/#/Home';
@@ -99,9 +125,18 @@ class ViewFinder extends React.Component {
     jumpToHome() {
         window.location.href = window.location.origin + '/#/Home';
     }
-    jumpToParamSetting() {
-        window.location.href = window.location.origin + '/#/ParamSetting';
+    jumpToParamSetting = () => {
+        if(this.state.anotherRunning==false){
+            window.location.href = window.location.origin + '/#/ParamSetting';
+        }else{
+                this.info('另一个项目正在拍摄中，相机暂时无法配置')
+        }
+        
     }
+     info = (msg) => {
+        message.info(msg);
+      };
+      
 
     startREC = () => {
         let data = {
@@ -121,7 +156,7 @@ class ViewFinder extends React.Component {
             })
 
         }).catch((response) => {
-            
+            this.info('另一个项目正在拍摄中,无法同时拍摄两个项目')
         });
 
     }
@@ -132,32 +167,30 @@ class ViewFinder extends React.Component {
             name: this.state.UImsg.name,
             running: false
         }
-        let running=true
+        let running = true
 
         axios({
             method: 'PUT', // 请求类型
             url: 'http://raspberrypi:9999/api/project', // 请求 url
             data: data
         }).then(response => {
-      
+
             let UImsg = this.state.UImsg
-        
+
             UImsg.running = false
-    
+
             this.setState({
                 UImsg: UImsg
             })
         }).catch((response) => {
-            running=true
-         
+            running = true
+
         });
-
-
 
     }
 
     render() {
-   
+
         return (
             <div>
                 <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>
@@ -261,7 +294,7 @@ class ViewFinder extends React.Component {
                     <Col span={2}>
                         <Row>
                             <Col span={5}></Col>
-                            {this.state.UImsg.name != "plantshutter" && !this.state.UImsg.running ? <Col span={14}> <img src={reset} style={{ width: "100%", height: "100%", display: "flex" }} /></Col> : <Col span={14}></Col>}
+                            {this.state.UImsg.name != "plantshutter" && !this.state.UImsg.running  ? <Col span={14}> <img src={reset} style={{ width: "100%", height: "100%", display: "flex" }} /></Col> : <Col span={14}></Col>}
                             <Col span={5}></Col>
                         </Row>
                     </Col>
