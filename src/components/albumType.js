@@ -66,11 +66,17 @@ class AlbumType extends React.Component {
     }
 
     jumpToVideoList = () => {
-        window.location.href = window.location.origin + '/#/VideoList';
+        if(this.state.video.total!=0){
+            window.location.href = window.location.origin + '/#/VideoList';
+        }
+        
     };
 
     jumpToImageList = () => {
-        window.location.href = window.location.origin + '/#/ImageList';
+        if(this.state.photo.total!=0){
+            window.location.href = window.location.origin + '/#/ImageList';
+        }
+       
     };
 
 
