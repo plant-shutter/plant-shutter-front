@@ -22,7 +22,7 @@ class Setbox extends React.Component {
             url: 'http://raspberrypi:9999/api/device/config', // 请求 url
             data: datas
         }).then(response => {
-          
+            console.log(response)
         })
     }
 
@@ -38,7 +38,7 @@ class Setbox extends React.Component {
             url: 'http://raspberrypi:9999/api/device/config', // 请求 url
             data: datas
         }).then(response => {
-            
+            console.log(response)
         })
     };
 

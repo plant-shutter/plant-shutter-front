@@ -53,7 +53,7 @@ class ProjectLists extends React.Component {
                                 </Row></Col>
                         </Row>
                     </Col>
-                    <Col span={2}> <Button style={{ margin: "0px", padding: "0px" }} size="small" onClick={this.showModal} type="link" danger >删除</Button></Col>
+                    <Col span={2}> <Button style={{ margin: "0px", padding: "0px" }} size="small" onClick={() => this.props.deleteProject(this.props.info.name)} type="link" danger >删除</Button></Col>
                 </Row>
                 <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
             </div>
@@ -65,9 +65,19 @@ class projects extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { visible: false, newProjectName: "", projectsList: [], running: true }
+        this.state = { addproject: false, newProjectName: "", projectsList: [], running: true, checkDeleteName: "", selectListName: "" }
     }
+
+
+
+
     componentDidMount() {
+        this.init()
+    }
+
+
+
+    init =()=>{
         fetch("http://raspberrypi:9999/api/project")
             .then(res => res.json())
             .then(json => {
@@ -77,7 +87,7 @@ class projects extends React.Component {
                 })
             }).catch((response) => {
 
-               
+
             });
 
         fetch("http://raspberrypi:9999/api/project/running")
@@ -96,10 +106,10 @@ class projects extends React.Component {
 
             }).catch((response) => {
 
-            
-            });
 
+            });
     }
+
     componentDidUpdate() {
 
 
@@ -123,14 +133,47 @@ class projects extends React.Component {
 
     showModal = () => {
         this.setState({
-            visible: true,
+            addproject: true,
         });
     };
 
+
+    handledeleteProjectOK = () => {
+
+        if (this.state.checkDeleteName == this.state.selectListName) {
+
+            axios.delete('http://raspberrypi:9999/api/project/'+this.state.checkDeleteName)
+                .then(res => {
+                    this.init()
+                }).catch(err => {
+                    console.error(err);
+                })
+
+            this.setState({
+                deleteobject: false,
+                checkDeleteName: "",
+            });
+
+
+        } else {
+            this.info('删除失败,待删除项目名称输入不正确')
+            this.setState({
+                deleteobject: false,
+            });
+
+        }
+
+
+
+    };
+
+    info = (msg) => {
+        message.info(msg);
+    };
     handleOk = e => {
 
         this.setState({
-            visible: false,
+            addproject: false,
         });
 
         let projectdata = {
@@ -144,7 +187,6 @@ class projects extends React.Component {
             }
 
         }
-
 
         axios({
             method: 'POST', // 请求类型
@@ -165,7 +207,7 @@ class projects extends React.Component {
                         })
                     }).catch((response) => {
 
-                       
+
                     });
             }
 
@@ -187,24 +229,59 @@ class projects extends React.Component {
     handleCancel = e => {
 
         this.setState({
-            visible: false,
+            deleteobject: false,
+            addproject: false,
+            checkDeleteName: "",
         });
+
     };
 
     changeProjectName = (value) => {
         this.setState({
             newProjectName: value.target.value,
         });
+
+    };
+
+    deleteProjectByName = (value) => {
+        this.setState({
+            checkDeleteName: value.target.value,
+        });
+    };
+
+    showDeleteProjectModal = (value) => {
+
+        this.setState({
+            selectListName: value,
+            deleteobject: true,
+        });
     };
 
     render() {
-
         return (
             <div>
+                <Modal
+                    title="删除项目"
+                    open={this.state.deleteobject}
+                    onOk={this.handledeleteProjectOK}
+                    onCancel={this.handleCancel}
+                >
+                    <Row>
+                        <Col span={2}></Col>
+                        <Col span={20} style={{ color: "red" }}>*注意此操作将永久删除{this.state.selectListName}项目以及项目下的所素材文件!</Col>
+                        <Col span={2}></Col>
+                        <Col span={2}></Col>
+                        <Col span={20}>输入待删除项目名称</Col>
+                        <Col span={2}></Col>
+                        <Col span={2}></Col>
+                        <Col span={20}><Input placeholder="项目名称" onChange={this.deleteProjectByName} value={this.state.checkDeleteName} /></Col>
+                        <Col span={2}></Col>
+                    </Row>
+                </Modal>
 
                 <Modal
                     title="新建项目"
-                    open={this.state.visible}
+                    open={this.state.addproject}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
@@ -216,8 +293,6 @@ class projects extends React.Component {
                         <Col span={20}><Input placeholder="项目名称" onChange={this.changeProjectName} /></Col>
                         <Col span={2}></Col>
                     </Row>
-
-
                 </Modal>
                 <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>
                     <Col span={24}>
@@ -233,15 +308,12 @@ class projects extends React.Component {
                                     </Row>
                                 </Col>
 
-
                                 <Col span={22} style={{ display: 'flex' }} >
 
                                     <div style={{ width: "5%" }}>
                                         <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
                                     </div>
                                     <Typography onClick={this.jumpToProjects} style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>项目拍摄</Typography>
-
-
 
                                 </Col>
                             </Row>
@@ -263,10 +335,9 @@ class projects extends React.Component {
                 <div style={{ margin: "0px", padding: "0px" }}>
                     {this.state.projectsList.map(projectsList =>
                         <div style={{ margin: "0px", padding: "0px" }} key={projectsList.name}>
-                            <ProjectLists info={projectsList} jumpToViewFinder={this.jumpToViewFinder}></ProjectLists>
+                            <ProjectLists info={projectsList} jumpToViewFinder={this.jumpToViewFinder} deleteProject={this.showDeleteProjectModal}></ProjectLists>
                         </div>)}
                 </div>
-
 
             </div>
         )
