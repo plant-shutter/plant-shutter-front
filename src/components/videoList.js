@@ -1,5 +1,5 @@
 import logo from "./icons/logo.png"
-
+import axios from "axios";
 import rightArray from "./icons/rightArray.svg"
 import React from "react";
 import { globalProjectDataContext } from "./globalProjectData"
@@ -21,6 +21,18 @@ class VideoEntries extends React.Component {
         // 构造最终的时间字符串
         var outputTime = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
         this.state = { date: outputTime }
+    }
+    deleteVideo=()=>{
+        axios({
+            method: 'DELETE', // 请求类型
+            url: 'http://raspberrypi:9999/api/project/'+this.props.projectName+"/video/"+this.props.info.name, // 请求 url
+        }).then(response => {
+            this.props.init()
+
+        }).catch((response) => {
+            
+        });
+     
     }
 
     render() {
@@ -45,7 +57,7 @@ class VideoEntries extends React.Component {
                             </Col>
                         </Row>
                     </Col>
-                    <Col span={2}><Button style={{ margin: "0px", padding: "0px", marginTop: "40%" }} size="small" onClick={this.showModal} type="link" danger >删除</Button></Col>
+                    <Col span={2}><Button style={{ margin: "0px", padding: "0px", marginTop: "40%" }} size="small" onClick={this.deleteVideo} type="link" danger >删除</Button></Col>
                     <Col span={1}></Col>
                 </Row>
                 <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
@@ -66,23 +78,28 @@ class VideoList extends React.Component {
     }
     componentDidMount() {
 
+      this.init()
+
+    }
+
+    init=()=>{
         fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
-            .then(res => res.json())
-            .then(json => {
-                if (json.status != "success") {
-                    window.location.href = window.location.origin + '/#/Album';
-                }
-                this.setState({
-                    video: json.data
-                })
-
-
-            }).catch((response) => {
+        .then(res => res.json())
+        .then(json => {
+           
+            if (json.status != "success" || json.data.total==0) {
                 window.location.href = window.location.origin + '/#/Album';
+            }
+            this.setState({
+                video: json.data
             })
 
 
+        }).catch((response) => {
+            window.location.href = window.location.origin + '/#/Album';
+        })
     }
+
     componentDidUpdate() {
 
     }
@@ -140,7 +157,7 @@ class VideoList extends React.Component {
 
                     {this.state.video.video.map(videoEntries =>
                         <div style={{ margin: "0px", padding: "0px" }} key={videoEntries.name}>
-                            <VideoEntries info={videoEntries} projectName={this.context.name} ></VideoEntries>
+                            <VideoEntries info={videoEntries} projectName={this.context.name} init={this.init}></VideoEntries>
                         </div>)}
                 </div>
             </div>

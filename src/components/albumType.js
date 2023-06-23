@@ -5,7 +5,7 @@ import photo from "./icons/photo.svg"
 import rightArray from "./icons/rightArray.svg"
 import React from "react";
 import { globalProjectDataContext } from "./globalProjectData"
-import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
+import { Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
 
 class AlbumType extends React.Component {
@@ -13,6 +13,8 @@ class AlbumType extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            deleteImages:false,
+            deleteVideos:false,
             video: {
                 total: 0,
                 totalSize: ""
@@ -23,11 +25,16 @@ class AlbumType extends React.Component {
         }
     }
     componentDidMount() {
+        this.init()
+
+    }
+
+    init = () => {
         fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
-            
-                if(json.status!="success"){
+
+                if (json.status != "success") {
                     window.location.href = window.location.origin + '/#/Album';
                 }
                 this.setState({
@@ -40,8 +47,8 @@ class AlbumType extends React.Component {
         fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/image?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
-               
-                if(json.status!="success"){
+
+                if (json.status != "success") {
                     window.location.href = window.location.origin + '/#/Album';
                 }
                 this.setState({
@@ -51,8 +58,8 @@ class AlbumType extends React.Component {
             }).catch((response) => {
                 window.location.href = window.location.origin + '/#/Album';
             })
-
     }
+
     componentDidUpdate() {
 
     }
@@ -66,23 +73,114 @@ class AlbumType extends React.Component {
     }
 
     jumpToVideoList = () => {
-        if(this.state.video.total!=0){
+        if (this.state.video.total != 0) {
             window.location.href = window.location.origin + '/#/VideoList';
         }
-        
+
     };
 
     jumpToImageList = () => {
-        if(this.state.photo.total!=0){
+        if (this.state.photo.total != 0) {
             window.location.href = window.location.origin + '/#/ImageList';
         }
-       
+
+    };
+
+
+    handleDeleteVideos = () => {
+        axios({
+            method: 'DELETE', // 请求类型
+            url: 'http://raspberrypi:9999/api/project/'+this.context.name+"/video", // 请求 url
+        }).then(response => {
+            this.init()
+
+        }).catch((response) => {
+            
+        });
+      
+
+        this.setState({
+            deleteVideos: false,
+        });
+
+    };
+    handleCancelDeleteVideos = () => {
+
+        this.setState({
+            deleteVideos: false,
+        });
+
+    };
+
+    showDeleteVideosModal = () => {
+        this.setState({
+            deleteVideos: true,
+        });
+    };
+
+    handleDeleteImages = () => {
+        
+        axios({
+            method: 'DELETE', // 请求类型
+            url: 'http://raspberrypi:9999/api/project/'+this.context.name+"/image", // 请求 url
+        }).then(response => {
+            this.init()
+
+        }).catch((response) => {
+            
+        });
+      
+
+        this.setState({
+            deleteImages: false,
+        });
+
+    };
+    handleCancelDeleteImages = () => {
+
+        this.setState({
+            deleteImages: false,
+        });
+
+    };
+
+    showDeleteImagesModal = () => {
+        this.setState({
+            deleteImages: true,
+        });
     };
 
 
     render() {
         return (
             <div>
+
+                <Modal
+                    title="清空预览视频"
+                    open={this.state.deleteVideos}
+                    onOk={this.handleDeleteVideos}
+                    onCancel={this.handleCancelDeleteVideos}
+                >
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col span={22} style={{ color: "red" }}>*注意此项目预览视频将被永久删除!</Col>
+                        <Col span={1}></Col>
+                    </Row>
+                </Modal>
+
+                <Modal
+                    title="清空图片序列"
+                    open={this.state.deleteImages}
+                    onOk={this.handleDeleteImages}
+                    onCancel={this.handleCancelDeleteImages}
+                >
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col span={22} style={{ color: "red" }}>*注意此项目图片序列将被永久删除!</Col>
+                        <Col span={1}></Col>
+                    </Row>
+                </Modal>
+
                 <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>
                     <Col span={24}>
                         <div style={{ backgroundColor: "#000000", padding: "1%", width: "100%" }}>
@@ -131,7 +229,7 @@ class AlbumType extends React.Component {
 
 
                         </Col>
-                        <Col span={2}> <Button style={{ margin: "0px", padding: "0px", marginTop: "50%" }} size="small" onClick={this.showModal} type="link" danger >清空</Button></Col>
+                        <Col span={2}> <Button  onClick={this.showDeleteVideosModal} style={{ margin: "0px", padding: "0px", marginTop: "50%" }} size="small"  type="link" danger >清空</Button></Col>
                     </Row>
                     <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
                     <Row>
@@ -148,7 +246,7 @@ class AlbumType extends React.Component {
                                 <Col span={24}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.photo.total} 张图片 - {this.state.photo.totalSize}</Typography> </Col>
                             </Row>
                         </Col>
-                        <Col span={2}> <Button style={{ margin: "0px", padding: "0px", marginTop: "50%" }} size="small" onClick={this.showModal} type="link" danger >清空</Button></Col>
+                        <Col span={2}> <Button style={{ margin: "0px", padding: "0px", marginTop: "50%" }} size="small" onClick={this.showDeleteImagesModal} type="link" danger >清空</Button></Col>
                     </Row>
                     <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
                 </div>
