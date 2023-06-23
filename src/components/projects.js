@@ -67,16 +67,9 @@ class projects extends React.Component {
         super(props)
         this.state = { addproject: false, newProjectName: "", projectsList: [], running: true, checkDeleteName: "", selectListName: "" }
     }
-
-
-
-
     componentDidMount() {
         this.init()
     }
-
-
-
     init =()=>{
         fetch("http://raspberrypi:9999/api/project")
             .then(res => res.json())
