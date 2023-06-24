@@ -1,5 +1,6 @@
 import logo from "./icons/logo.png"
 import React from "react";
+import axios from "axios";
 import rightArray from "./icons/rightArray.svg"
 import { globalProjectDataContext } from "./globalProjectData"
 import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
@@ -54,7 +55,7 @@ class AlbumLists extends React.Component {
                         </Row>
 
                     </Col>
-                    <Col span={2}> <Button style={{ margin: "0px", padding: "0px" }} size="small" onClick={this.showModal} type="link" danger >清空</Button></Col>
+                    <Col span={2}> <Button style={{ margin: "0px", padding: "0px" }} size="small" onClick={() => this.props.deleteAlbum(this.props.info.name)} type="link" danger >清空</Button></Col>
                 </Row>
                 <Divider style={{ margin: "0", padding: "0" }} orientation="left"></Divider>
 
@@ -68,9 +69,13 @@ class Album extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { albumLists: [] }
+        this.state = { albumLists: [], deleteAlbum: false, AlbumToBeDeleted: "" }
     }
     componentDidMount() {
+        this.init()
+
+    }
+    init = () => {
         fetch("http://raspberrypi:9999/api/project")
             .then(res => res.json())
             .then(json => {
@@ -80,9 +85,8 @@ class Album extends React.Component {
                 })
             }).catch((response) => {
 
-                
-            });
 
+            });
     }
     componentDidUpdate() {
     }
@@ -96,9 +100,61 @@ class Album extends React.Component {
         window.location.href = window.location.origin + '/#/Home';
     }
 
+    handleDeleteAlbum = () => {
+
+        axios({
+            method: 'DELETE', // 请求类型
+            url: 'http://raspberrypi:9999/api/project/' + this.state.AlbumToBeDeleted + "/image", // 请求 url
+        }).then(response => {
+            axios({
+                method: 'DELETE', // 请求类型
+                url: 'http://raspberrypi:9999/api/project/' + this.state.AlbumToBeDeleted  + "/video", // 请求 url
+            }).then(response => {
+                this.init()
+            }).catch((response) => {
+
+            });
+
+        }).catch((response) => {
+
+        });
+
+
+        this.setState({
+            deleteAlbum: false,
+        });
+
+    };
+    handleCancelDeleteAlbum = () => {
+
+        this.setState({
+            deleteAlbum: false,
+        });
+
+    };
+
+    showDeleteAlbumModal = (value) => {
+
+        this.setState({
+            deleteAlbum: true,
+            AlbumToBeDeleted: value,
+        });
+    };
     render() {
         return (
             <div>
+                <Modal
+                    title="清空相册"
+                    open={this.state.deleteAlbum}
+                    onOk={this.handleDeleteAlbum}
+                    onCancel={this.handleCancelDeleteAlbum}
+                >
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col span={22} style={{ color: "red" }}>*注意此项目预览视频以及图片序列将被永久删除!</Col>
+                        <Col span={1}></Col>
+                    </Row>
+                </Modal>
                 <Row style={{ position: "fixed", zIndex: "1", top: "0px", left: "0px", width: "100%" }}>
                     <Col span={24}>
                         <div style={{ backgroundColor: "#000000", padding: "1%", width: "100%" }}>
@@ -117,9 +173,9 @@ class Album extends React.Component {
                                     <div style={{ width: "5%" }}>
                                         <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
                                     </div>
-                                    <Typography  style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>相册浏览</Typography>
+                                    <Typography style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>相册浏览</Typography>
 
-     
+
 
                                 </Col>
                             </Row>
@@ -131,7 +187,7 @@ class Album extends React.Component {
                 <div style={{ margin: "0px", padding: "0px" }}>
                     {this.state.albumLists.map(albumLists =>
                         <div style={{ margin: "0px", padding: "0px" }} key={albumLists.name}>
-                            <AlbumLists info={albumLists} jumpToProjectAlbum={this.jumpToProjectAlbum}></AlbumLists>
+                            <AlbumLists info={albumLists} jumpToProjectAlbum={this.jumpToProjectAlbum} deleteAlbum={this.showDeleteAlbumModal}></AlbumLists>
                         </div>)}
                 </div>
 
