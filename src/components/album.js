@@ -79,10 +79,15 @@ class Album extends React.Component {
         fetch("http://raspberrypi:9999/api/project")
             .then(res => res.json())
             .then(json => {
+                if (json.status == "error") {
+                    console.log(json)
+                } else {
+                    this.setState({
+                        albumLists: json.data
+                    })
+                }
 
-                this.setState({
-                    albumLists: json.data
-                })
+
             }).catch((response) => {
 
 
@@ -108,7 +113,7 @@ class Album extends React.Component {
         }).then(response => {
             axios({
                 method: 'DELETE', // 请求类型
-                url: 'http://raspberrypi:9999/api/project/' + this.state.AlbumToBeDeleted  + "/video", // 请求 url
+                url: 'http://raspberrypi:9999/api/project/' + this.state.AlbumToBeDeleted + "/video", // 请求 url
             }).then(response => {
                 this.init()
             }).catch((response) => {

@@ -1,7 +1,7 @@
 import VerifyStopRecord from "./verifyStopRecord.tsx"
 import React from "react";
 import axios from "axios";
-import { Row, Col, Divider, Typography, message,Modal } from 'antd';
+import { Row, Col, Divider, Typography, message, Modal } from 'antd';
 import logo from "./icons/logo.png"
 import rightArray from "./icons/rightArray.svg"
 import reset from "./icons/reset.svg"
@@ -61,7 +61,6 @@ class ViewFinder extends React.Component {
         super(props)
         this.state = {
             resetProject: false,
-            para: [],
             UImsg: {
                 name: "plantshutter",
                 video: {
@@ -69,33 +68,55 @@ class ViewFinder extends React.Component {
                 },
                 camera: { "10094850": 0 },
                 inited: false,
-            }, anotherRunning: true
+            },
+            anotherRunning: true
         }
     }
     componentDidMount() {
         this.init()
-        this.inittimer = setInterval(() => {
-            this.init()
+        this.loop()
+        this.looptimer = setInterval(() => {
+            this.loop()
         }, 3000);
 
     }
 
     init = () => {
-        fetch("http://raspberrypi:9999/api/device/config")
+        //获取项目参数，并将摄像头参数设置为项目配置
+        fetch("http://raspberrypi:9999/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
-                this.setState({
-                    para: json.data
+               
+                let cameraDatas=[]
+                for(let key in json.data.camera){
+                    let cameraData={ID:parseInt(key),value:json.data.camera[key]}
+                    cameraDatas.push(cameraData)
+                }
+             
+                axios({
+                    method: 'PUT', // 请求类型
+                    url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+                    data: cameraDatas
+                }).then(response => {
+                    // console.log(response)
+                }).catch((response) => {
+                    // console.log(response)
                 })
+                this.setState({
+                    UImsg: json.data
+                })
+            }).catch((response) => {
+                window.location.href = window.location.origin + '/#/Home';
             })
-            .catch((response) => {
-                clearInterval(this.inittimer)
-            });
+    }
+
+    loop = () => {
+
 
         fetch("http://raspberrypi:9999/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
-                console.log(json.data)
+
                 this.setState({
                     UImsg: json.data
                 })
@@ -124,11 +145,10 @@ class ViewFinder extends React.Component {
 
                     }).catch((response) => {
 
-
                     });
 
             }).catch((response) => {
-                clearInterval(this.inittimer)
+                clearInterval(this.looptimer)
                 window.location.href = window.location.origin + '/#/Home';
             })
     }
@@ -138,7 +158,7 @@ class ViewFinder extends React.Component {
     }
     componentWillUnmount() {
 
-        clearInterval(this.inittimer)
+        clearInterval(this.looptimer)
     }
     jumpToProjects() {
         window.location.href = window.location.origin + '/#/Projects';
@@ -214,14 +234,14 @@ class ViewFinder extends React.Component {
     handleResetProject = () => {
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/project/'+this.context.name+"/reset", // 请求 url
+            url: 'http://raspberrypi:9999/api/project/' + this.context.name + "/reset", // 请求 url
         }).then(response => {
             this.init()
 
         }).catch((response) => {
-            
+
         });
-      
+
 
         this.setState({
             resetProject: false,
@@ -327,32 +347,29 @@ class ViewFinder extends React.Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={8}>
+                        <Col span={12}>
                             <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.interval * this.state.UImsg.video.fps / 1000}</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景缩时倍数</Typography></Col>
                         </Col>
-                        <Col span={8}>
+                        <Col span={12}>
                             <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>4K|{this.state.UImsg.video.fps}帧</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>视频参数</Typography></Col>
                         </Col>
-                        <Col span={8}>
-                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["10094850"]}</Title></Col>
-                            <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景曝光时间(us)</Typography></Col>
-                        </Col>
+
                     </Row>
 
 
                     <Row>
                         <Col span={8}>
-                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>60</Title></Col>
-                            <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景ISO</Typography></Col>
+                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["10094850"]}</Title></Col>
+                            <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景曝光时间(us)</Typography></Col>
                         </Col>
                         <Col span={8}>
-                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>1.34</Title></Col>
+                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["9963791"]/1000}</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景蓝色增益</Typography></Col>
                         </Col>
                         <Col span={8}>
-                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>1.42</Title></Col>
+                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["9963790"]/1000}</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景红色增益</Typography></Col>
                         </Col>
                     </Row>

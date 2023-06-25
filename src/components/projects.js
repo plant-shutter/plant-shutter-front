@@ -74,10 +74,13 @@ class projects extends React.Component {
         fetch("http://raspberrypi:9999/api/project")
             .then(res => res.json())
             .then(json => {
-
-                this.setState({
-                    projectsList: json.data
-                })
+                if (json.status == "error") {
+                    console.log(json)
+                } else {
+                    this.setState({
+                        projectsList: json.data
+                    })
+                }
             }).catch((response) => {
 
 
