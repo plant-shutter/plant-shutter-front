@@ -175,12 +175,16 @@ class projects extends React.Component {
         let projectdata = {
             name: this.state.newProjectName,
             info: "test-info",
-            interval: 3000,
+            interval: 124800,
             video: {
                 enable: true,
-                fps: 2,
-                maxImage: 10
+                fps: 30,
+                maxImage: 450,
+                previewVideoLength:15,
+                shootingDays:6.5,
+                totalVideoLength:2.5
             }
+
 
         }
 

@@ -236,6 +236,7 @@ class ViewFinder extends React.Component {
             method: 'PUT', // 请求类型
             url: 'http://raspberrypi:9999/api/project/' + this.context.name + "/reset", // 请求 url
         }).then(response => {
+            this.info('重置成功')
             this.init()
 
         }).catch((response) => {

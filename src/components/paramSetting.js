@@ -11,7 +11,7 @@ class ParamSetting extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { setted: true, RedBalance: 1580, BlueBalance: 1580, ExposureTime: 1000, previousError: 0, integral: 0, para: [], frameRate: 30, NumberOfShootingDays: 6.5, TotalVideoLength: 2.5, PreviewVideoLength: 15, interval: 124800, maxImage: 450 }
+        this.state = { JpgQuality:50,setted: true, RedBalance: 1580, BlueBalance: 1580, ExposureTime: 1000, previousError: 0, integral: 0, para: [], frameRate: 30, NumberOfShootingDays: 6.5, TotalVideoLength: 2.5, PreviewVideoLength: 15, interval: 124800, maxImage: 450 }
     }
 
     componentDidMount() {
@@ -64,6 +64,7 @@ class ParamSetting extends React.Component {
                 value: 32896
             },
 
+
         ]
         axios({
             method: 'PUT', // 请求类型
@@ -75,6 +76,12 @@ class ParamSetting extends React.Component {
                 .then(res => res.json())
                 .then(json => {
 
+                    this.setState({
+                        frameRate:json.data.video.fps,
+                        PreviewVideoLength:json.data.video.previewVideoLength,
+                        TotalVideoLength:json.data.video.totalVideoLength,
+                        NumberOfShootingDays:json.data.video.shootingDays,
+                    })
                     for (let key in json.data.camera) {
                         if (key == "9963790") {
                             this.setState({
@@ -89,6 +96,11 @@ class ParamSetting extends React.Component {
                         if (key == "10094850") {
                             this.setState({
                                 ExposureTime: json.data.camera[key]
+                            })
+                        }
+                        if (key == "10291459") {
+                            this.setState({
+                                JpgQuality: json.data.camera[key]
                             })
                         }
 
@@ -224,10 +236,6 @@ class ParamSetting extends React.Component {
     }
 
     VideoParameterCalculation = () => {
-        console.log("frameRate" + this.state.frameRate)
-        console.log("NumberOfShootingDays" + this.state.NumberOfShootingDays)
-        console.log("TotalVideoLength" + this.state.TotalVideoLength)
-        console.log("PreviewVideoLength" + this.state.PreviewVideoLength)
         let setdata = true
         let interval = 3000
         let maxImage = 10
@@ -264,7 +272,10 @@ class ParamSetting extends React.Component {
                 "video": {
                     "enable": true,
                     "fps": this.state.frameRate,
-                    "maxImage": maxImage
+                    "maxImage": maxImage,
+                    "previewVideoLength":this.state.PreviewVideoLength,
+                    "shootingDays":this.state.NumberOfShootingDays,
+                    "totalVideoLength":this.state.TotalVideoLength,
                 },
                 "interval": interval,
 
@@ -383,11 +394,7 @@ class ParamSetting extends React.Component {
         }).catch((response) => {
             // console.log(response)
         })
-
-
-
     }
-
 
     ChangeExposureTime = (value) => {
         this.setState({
@@ -469,6 +476,33 @@ class ParamSetting extends React.Component {
         })
     }
 
+    ChangeJpgQuality = (value) => {
+        this.setState({
+            JpgQuality: value
+        })
+
+    }
+    AfterChangeJpgQuality = (value) => {
+
+        this.setState({
+            JpgQuality: value
+        })
+        let data = {
+            ID: 10291459,
+            value: value
+        }
+        let datas = []
+        datas.push(data)
+        axios({
+            method: 'PUT', // 请求类型
+            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            data: datas
+        }).then(response => {
+
+        })
+    }
+
+
     render() {
 
         return (
@@ -507,7 +541,7 @@ class ParamSetting extends React.Component {
                     </Col>
                     <Col span={24}>
                         <Row>
-                            <Col span={24}><img id="originalImage" crossorigin="" style={{ width: "100%", height: "100%" }} src="http://raspberrypi:9999/api/device/realtime/video" alt="video"></img></Col>
+                            <Col span={24}><img id="originalImage" crossOrigin="anonymous" style={{ width: "100%", height: "100%" }} src="http://raspberrypi:9999/api/device/realtime/video" alt="video"></img></Col>
                         </Row>
                     </Col>
                 </Row>
@@ -583,6 +617,27 @@ class ParamSetting extends React.Component {
                         <Col span={1}> </Col>
                     </Row>
 
+                    <Row justify="space-around" align="middle">
+                        <Col span={1}> </Col>
+                        <Col span={18}>图像质量</Col>
+                        <Col span={4}></Col>
+                        <Col span={1}></Col>
+                    </Row>
+                    <Row justify="space-around" align="middle">
+                        <Col span={1}> </Col>
+                        <Col span={22}>
+                            <Slider
+                                tipFormatter={(value) => `${value }%`}
+                                defaultValue={this.state.JpgQuality}
+                                value={this.state.JpgQuality}
+                                max={100}
+                                min={1}
+                                onChange={this.ChangeJpgQuality}
+                                onAfterChange={this.AfterChangeJpgQuality} />
+                        </Col>
+                        <Col span={1}> </Col>
+                    </Row>
+
                 </div>
                 <Row >
                     <Col span={1}></Col>
@@ -605,7 +660,6 @@ class ParamSetting extends React.Component {
                                     value={this.state.frameRate}
                                     style={{ width: 120 }}
                                     onChange={this.frameRateChange}
-                                    onAfterChange={this.VideoParameterCalculation}
                                     options={[
                                         { value: 24, label: '24帧' },
                                         { value: 30, label: '30帧' },
