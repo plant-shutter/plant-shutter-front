@@ -2,6 +2,7 @@ import logo from "./icons/logo.png"
 import React from "react";
 import axios from "axios";
 import rightArray from "./icons/rightArray.svg"
+import url from "../url"
 import { globalProjectDataContext } from "./globalProjectData"
 import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
@@ -76,7 +77,7 @@ class Album extends React.Component {
 
     }
     init = () => {
-        fetch("http://raspberrypi:9999/api/project")
+        fetch(url+"/api/project")
             .then(res => res.json())
             .then(json => {
                 if (json.status == "error") {
@@ -109,11 +110,11 @@ class Album extends React.Component {
 
         axios({
             method: 'DELETE', // 请求类型
-            url: 'http://raspberrypi:9999/api/project/' + this.state.AlbumToBeDeleted + "/image", // 请求 url
+            url: url+'/api/project/' + this.state.AlbumToBeDeleted + "/image", // 请求 url
         }).then(response => {
             axios({
                 method: 'DELETE', // 请求类型
-                url: 'http://raspberrypi:9999/api/project/' + this.state.AlbumToBeDeleted + "/video", // 请求 url
+                url: url+'/api/project/' + this.state.AlbumToBeDeleted + "/video", // 请求 url
             }).then(response => {
                 this.init()
             }).catch((response) => {

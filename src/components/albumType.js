@@ -3,6 +3,7 @@ import axios from "axios";
 import video from "./icons/video.svg"
 import photo from "./icons/photo.svg"
 import rightArray from "./icons/rightArray.svg"
+import url from "../url"
 import React from "react";
 import { globalProjectDataContext } from "./globalProjectData"
 import { Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
@@ -30,7 +31,7 @@ class AlbumType extends React.Component {
     }
 
     init = () => {
-        fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
+        fetch(url+"/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
 
@@ -44,7 +45,7 @@ class AlbumType extends React.Component {
             }).catch((response) => {
                 window.location.href = window.location.origin + '/#/Album';
             })
-        fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/image?page=1&page_size=99999999")
+        fetch(url+"/api/project/" + this.context.name + "/image?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
 
@@ -90,7 +91,7 @@ class AlbumType extends React.Component {
     handleDeleteVideos = () => {
         axios({
             method: 'DELETE', // 请求类型
-            url: 'http://raspberrypi:9999/api/project/'+this.context.name+"/video", // 请求 url
+            url: url+'/api/project/'+this.context.name+"/video", // 请求 url
         }).then(response => {
             this.init()
 
@@ -122,7 +123,7 @@ class AlbumType extends React.Component {
         
         axios({
             method: 'DELETE', // 请求类型
-            url: 'http://raspberrypi:9999/api/project/'+this.context.name+"/image", // 请求 url
+            url: url+'/api/project/'+this.context.name+"/image", // 请求 url
         }).then(response => {
             this.init()
 

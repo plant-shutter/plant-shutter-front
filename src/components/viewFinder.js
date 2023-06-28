@@ -7,6 +7,7 @@ import rightArray from "./icons/rightArray.svg"
 import reset from "./icons/reset.svg"
 import { globalProjectDataContext } from "./globalProjectData"
 import setting from "./icons/setting.svg"
+import url from "../url"
 const { Title } = Typography;
 
 class Recording extends React.Component {
@@ -83,7 +84,7 @@ class ViewFinder extends React.Component {
 
     init = () => {
         //获取项目参数，并将摄像头参数设置为项目配置
-        fetch("http://raspberrypi:9999/api/project/" + this.context.name)
+        fetch(url+"/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
                
@@ -95,7 +96,7 @@ class ViewFinder extends React.Component {
              
                 axios({
                     method: 'PUT', // 请求类型
-                    url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+                    url: url+'/api/device/config', // 请求 url
                     data: cameraDatas
                 }).then(response => {
                     // console.log(response)
@@ -113,7 +114,7 @@ class ViewFinder extends React.Component {
     loop = () => {
 
 
-        fetch("http://raspberrypi:9999/api/project/" + this.context.name)
+        fetch(url+"/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
 
@@ -121,7 +122,7 @@ class ViewFinder extends React.Component {
                     UImsg: json.data
                 })
 
-                fetch("http://raspberrypi:9999/api/project/running")
+                fetch(url+"/api/project/running")
                     .then(res => res.json())
                     .then(jsonrunning => {
                         if (jsonrunning.data == undefined) {
@@ -186,7 +187,7 @@ class ViewFinder extends React.Component {
         }
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/project', // 请求 url
+            url: url+'/api/project', // 请求 url
             data: data
         }).then(response => {
 
@@ -212,7 +213,7 @@ class ViewFinder extends React.Component {
 
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/project', // 请求 url
+            url: url+'/api/project', // 请求 url
             data: data
         }).then(response => {
 
@@ -234,7 +235,7 @@ class ViewFinder extends React.Component {
     handleResetProject = () => {
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/project/' + this.context.name + "/reset", // 请求 url
+            url: url+'/api/project/' + this.context.name + "/reset", // 请求 url
         }).then(response => {
             this.info('重置成功')
             this.init()
@@ -315,7 +316,7 @@ class ViewFinder extends React.Component {
                         </Col>
                         <Col span={24}>
                             <Row>
-                                <Col span={24}><img style={{ width: "100%", height: "100%" }} src="http://raspberrypi:9999/api/device/realtime/video" alt="video"></img></Col>
+                                <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"}alt="video"></img></Col>
                             </Row>
                         </Col>
                     </Row>
@@ -427,7 +428,7 @@ class ViewFinder extends React.Component {
                         </Col>
                         <Col span={24}>
                             <Row>
-                                <Col span={24}><img style={{ width: "100%", height: "100%" }} src="http://raspberrypi:9999/api/device/realtime/video" alt="video"></img></Col>
+                                <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"} alt="video"></img></Col>
                             </Row>
                         </Col>
                     </Row>

@@ -3,6 +3,7 @@ import logo from "./icons/logo.png"
 import rightArray from "./icons/rightArray.svg"
 import React from "react";
 import { globalProjectDataContext } from "./globalProjectData"
+import url from "../url"
 import { Image, Pagination, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
 
@@ -31,7 +32,7 @@ class ImageList extends React.Component {
 
     componentDidMount() {
 
-        fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/image?page=1&page_size=99999999")
+        fetch(url+"/api/project/" + this.context.name + "/image?page=1&page_size=99999999")
             .then(res => res.json())
             .then(json => {
                 if (json.status != "success") {
@@ -46,7 +47,7 @@ class ImageList extends React.Component {
                     size: json.data.images[0].size,
                     modTime: json.data.images[0].modTime,
                     resolution: "3240*2420",
-                    url: "http://raspberrypi:9999/api/project/" + this.context.name + "/image/" + json.data.images[0].name,
+                    url: url+"/api/project/" + this.context.name + "/image/" + json.data.images[0].name,
                     
 
                 }
@@ -61,7 +62,7 @@ class ImageList extends React.Component {
                 window.location.href = window.location.origin + '/#/Album';
             })
 
-        fetch("http://raspberrypi:9999/api/project/" + this.context.name)
+        fetch(url+"/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
 
@@ -111,7 +112,7 @@ class ImageList extends React.Component {
             size: this.state.images[num].size,
             modTime: this.state.images[num].modTime,
             resolution: "3240*2420",
-            url: "http://raspberrypi:9999/api/project/" + this.context.name + "/image/" + this.state.images[num].name,
+            url: url+"/api/project/" + this.context.name + "/image/" + this.state.images[num].name,
         }
         this.setState({
 

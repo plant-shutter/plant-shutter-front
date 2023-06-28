@@ -8,6 +8,7 @@ import Album from "./components/album";
 import AlbumType from "./components/albumType";
 import VideoList from "./components/videoList";
 import ImageList from "./components/imageList";
+import Set from "./components/set";
 
 
 import { Routes, Route, Link } from "react-router-dom";
@@ -37,6 +38,7 @@ export default class App extends Component {
             <Route path="/AlbumType" element={<AlbumType />} />
             <Route path="/VideoList" element={<VideoList />} />
             <Route path="/ImageList" element={<ImageList />} />
+            <Route path="/Set" element={<Set />} />
           </Routes>
         </Provider>
 

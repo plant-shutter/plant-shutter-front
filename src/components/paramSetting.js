@@ -3,6 +3,7 @@ import axios from "axios";
 import { Row, Col, Divider, Slider, Button, InputNumber, Select, message, Typography } from 'antd';
 import logo from "./icons/logo.png"
 import rightArray from "./icons/rightArray.svg"
+import url from "../url"
 import { globalProjectDataContext } from "./globalProjectData"
 const { Title } = Typography;
 
@@ -68,11 +69,11 @@ class ParamSetting extends React.Component {
         ]
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            url: url+'/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
-            fetch("http://raspberrypi:9999/api/project/" + this.context.name)
+            fetch(url+"/api/project/" + this.context.name)
                 .then(res => res.json())
                 .then(json => {
 
@@ -112,7 +113,7 @@ class ParamSetting extends React.Component {
                 })
 
             //查询正在拍摄的项目
-            fetch("http://raspberrypi:9999/api/project/running")
+            fetch(url+"/api/project/running")
                 .then(res => res.json())
 
                 .then(json => {
@@ -152,7 +153,7 @@ class ParamSetting extends React.Component {
         }
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/project', // 请求 url
+            url: url+'/api/project', // 请求 url
             data: data
         }).then(response => {
 
@@ -283,7 +284,7 @@ class ParamSetting extends React.Component {
 
             axios({
                 method: 'PUT', // 请求类型
-                url: 'http://raspberrypi:9999/api/project', // 请求 url
+                url: url+'/api/project', // 请求 url
                 data: data
             }).then(response => {
 
@@ -387,7 +388,7 @@ class ParamSetting extends React.Component {
         datas.push(ExposureData)
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            url: url+'/api/device/config', // 请求 url
             data: datas
         }).then(response => {
             // console.log(response)
@@ -415,7 +416,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            url: url+'/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -442,7 +443,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            url: url+'/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -469,7 +470,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            url: url+'/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -495,7 +496,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: 'http://raspberrypi:9999/api/device/config', // 请求 url
+            url: url+'/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -541,7 +542,7 @@ class ParamSetting extends React.Component {
                     </Col>
                     <Col span={24}>
                         <Row>
-                            <Col span={24}><img id="originalImage" crossOrigin="anonymous" style={{ width: "100%", height: "100%" }} src="http://raspberrypi:9999/api/device/realtime/video" alt="video"></img></Col>
+                            <Col span={24}><img id="originalImage" crossOrigin="anonymous" style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"} alt="video"></img></Col>
                         </Row>
                     </Col>
                 </Row>

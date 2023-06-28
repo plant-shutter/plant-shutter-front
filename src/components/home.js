@@ -2,7 +2,7 @@ import album from "./icons/album.svg"
 import shooting from "./icons/shooting.svg"
 import setting from "./icons/setting.svg"
 import logo from "./icons/logo.png"
-
+import url from "../url"
 import React from "react";
 import { Image, Row, Col, Divider, Slider, Button, InputNumber, Select, Space, Progress, Typography, List, Popconfirm, message } from 'antd';
 const { Title } = Typography;
@@ -26,7 +26,7 @@ class Home extends React.Component {
     }
 
     loop = () => {
-        fetch("http://raspberrypi:9999/api/device/memory")
+        fetch(url+"/api/device/memory")
             .then(res => res.json())
             .then(json => {
                 json.data.usedPercent = json.data.usedPercent.toFixed(2)
@@ -37,7 +37,7 @@ class Home extends React.Component {
             });
 
 
-        fetch("http://raspberrypi:9999/api/device/disk")
+        fetch(url+"/api/device/disk")
             .then(res => res.json())
             .then(json => {
                 json.data.usedPercent = json.data.usedPercent.toFixed(2)
@@ -61,7 +61,10 @@ class Home extends React.Component {
     jumpToAlbum() {
         window.location.href = window.location.origin + '/#/Album';
     }
-
+    
+    jumpToSet() {
+        window.location.href = window.location.origin + '/#/Set';
+    }
 
     render() {
 
@@ -81,7 +84,7 @@ class Home extends React.Component {
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col span={20}><Typography style={{ textAlign: "center", color: "#FFFFFF" }}>plant-shutter</Typography></Col>
+                                <Col span={20}><Typography  style={{ textAlign: "center", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>plant-shutter</Typography></Col>
                                 <Col span={2}></Col>
 
                             </Row>
@@ -91,67 +94,12 @@ class Home extends React.Component {
                     </Col>
                     <Col span={24}>
                         <Row>
-                            <Col span={24}><img style={{ width: "100%", height: "100%" }} src="http://raspberrypi:9999/api/device/realtime/video" alt="video"></img></Col>
+                            <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"} alt="video"></img></Col>
                         </Row>
                     </Col>
                 </Row>
 
-
-
-                <Space direction="vertical" size="small" style={{ display: 'flex', marginTop: "86%" }}>
-
-                    <Divider style={{ margin: "0" }} orientation="left">存储</Divider>
-                    <Row>
-                        <Col span={1}></Col>
-                        <Col span={5}><Progress type="circle" percent={this.state.dist.usedPercent} size={70} /></Col>
-                        <Col span={2}></Col>
-                        <Col span={11}>
-                            <Space direction="vertical" size="small" style={{ display: 'flex' }}>
-                                <Row >
-                                    <Col style={{ margin: "0" }} span={24}>
-                                        <Title style={{ margin: "0" }} level={5}>磁盘空间</Title>
-                                    </Col>
-                                </Row>
-
-                                <Row >
-                                    <Col style={{ margin: "0" }} span={24}>
-                                        <Title style={{ margin: "0" }} level={5}>剩余{this.state.dist.free}，共{this.state.dist.total}</Title>
-                                    </Col>
-                                </Row>
-                            </Space>
-
-                        </Col>
-                        <Col span={5}></Col>
-                    </Row>
-                </Space>
-                <Space direction="vertical" size="small" style={{ display: 'flex' ,marginTop: "2%"}}>
-
-                    <Divider style={{ margin: "0" }} orientation="left">运行</Divider>
-                    <Row>
-                        <Col span={1}></Col>
-                        <Col span={5}><Progress type="circle" percent={this.state.memory.usedPercent} size={70} /></Col>
-                        <Col span={2}></Col>
-                        <Col span={11}>
-                            <Space direction="vertical" size="small" style={{ display: 'flex' }}>
-                                <Row >
-                                    <Col style={{ margin: "0" }} span={24}>
-                                        <Title style={{ margin: "0" }} level={5}>内存空间</Title>
-                                    </Col>
-                                </Row>
-
-                                <Row >
-                                    <Col style={{ margin: "0" }} span={24}>
-                                        <Title style={{ margin: "0" }} level={5}>剩余{this.state.memory.free}，共{this.state.memory.total}</Title>
-                                    </Col>
-                                </Row>
-                            </Space>
-
-                        </Col>
-                        <Col span={5}></Col>
-                    </Row>
-                </Space>
-                <Divider style={{ margin: "1" }} orientation="left"></Divider>
-
+                <Divider style={{ margin: "1",marginTop: "86%"  }} orientation="left"></Divider>
                 <Row >
                     <Col span={1}></Col>
                     <Col span={6} style={{ display: 'flex' }}>
@@ -192,7 +140,7 @@ class Home extends React.Component {
                         </Row>
                     </Col>
                     <Col span={2}></Col>
-                    {/* <Col span={6} style={{ display: 'flex' }}>
+                    <Col span={6} style={{ display: 'flex' }}>
                         <Row justify="space-around" align="middle"  >
                             <Col span={1}></Col>
                             <Col span={22} style={{ display: 'flex' }}>
@@ -200,7 +148,7 @@ class Home extends React.Component {
                                     <Row >
                                         <Col span={24}>&nbsp; </Col>
                                         <Col span={5}></Col>
-                                        <Col span={14}>  <img src={setting} style={{ width: "100%", height: "100%", display: "flex" }} /></Col>
+                                        <Col span={14}>  <img src={setting} style={{ width: "100%", height: "100%", display: "flex" }} onClick={this.jumpToSet} /></Col>
                                         <Col span={5}></Col>
                                         <Col span={24} ><Typography style={{ textAlign: "center" }}>系统设置</Typography></Col>
                                     </Row>
@@ -209,7 +157,7 @@ class Home extends React.Component {
                             </Col>
                             <Col span={1}></Col>
                         </Row>
-                    </Col> */}
+                    </Col>
                     <Col span={1}></Col>
                 </Row>
             </div>

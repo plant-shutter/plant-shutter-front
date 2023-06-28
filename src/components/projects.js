@@ -3,6 +3,7 @@ import axios from "axios";
 import React from "react";
 import { globalProjectDataContext } from "./globalProjectData"
 import rightArray from "./icons/rightArray.svg"
+import url from "../url"
 import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
 
@@ -71,7 +72,7 @@ class projects extends React.Component {
         this.init()
     }
     init =()=>{
-        fetch("http://raspberrypi:9999/api/project")
+        fetch(url+"/api/project")
             .then(res => res.json())
             .then(json => {
                 if (json.status == "error") {
@@ -86,7 +87,7 @@ class projects extends React.Component {
 
             });
 
-        fetch("http://raspberrypi:9999/api/project/running")
+        fetch(url+"/api/project/running")
             .then(res => res.json())
             .then(json => {
                 if (json.data == undefined) {
@@ -138,7 +139,7 @@ class projects extends React.Component {
 
         if (this.state.checkDeleteName == this.state.selectListName) {
 
-            axios.delete('http://raspberrypi:9999/api/project/'+this.state.checkDeleteName)
+            axios.delete(url+'/api/project/'+this.state.checkDeleteName)
                 .then(res => {
                     this.init()
                 }).catch(err => {
@@ -190,7 +191,7 @@ class projects extends React.Component {
 
         axios({
             method: 'POST', // 请求类型
-            url: 'http://raspberrypi:9999/api/project', // 请求 url
+            url: url+'/api/project', // 请求 url
             data: projectdata
         }).then(response => {
 
@@ -198,7 +199,7 @@ class projects extends React.Component {
             if (this.state.running == false) {
                 window.location.href = window.location.origin + '/#/ParamSetting/';
             } else {
-                fetch("http://raspberrypi:9999/api/project")
+                fetch(url+"/api/project")
                     .then(res => res.json())
                     .then(json => {
 

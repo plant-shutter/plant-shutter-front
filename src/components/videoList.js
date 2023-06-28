@@ -3,6 +3,7 @@ import axios from "axios";
 import rightArray from "./icons/rightArray.svg"
 import React from "react";
 import { globalProjectDataContext } from "./globalProjectData"
+import url from "../url"
 import { Image, Row, Col, Divider, Slider, Button, Input, Select, Space, Progress, Typography, List, Popconfirm, message, Modal, notification } from 'antd';
 const { Title } = Typography;
 
@@ -25,7 +26,7 @@ class VideoEntries extends React.Component {
     deleteVideo=()=>{
         axios({
             method: 'DELETE', // 请求类型
-            url: 'http://raspberrypi:9999/api/project/'+this.props.projectName+"/video/"+this.props.info.name, // 请求 url
+            url: url+'/api/project/'+this.props.projectName+"/video/"+this.props.info.name, // 请求 url
         }).then(response => {
             this.props.init()
 
@@ -41,12 +42,12 @@ class VideoEntries extends React.Component {
                 <Row>
                     <Col span={2}></Col>
                     <Col span={19}>
-                        <a href={"http://raspberrypi:9999/api/" + this.props.info.name}></a>
+                        <a href={url+"/api/" + this.props.info.name}></a>
                         <Row>
                             <Col span={24}>
                                 <Title style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", marginTop: "1%" }} level={5}>
                                     <div style={{ margin: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                        <a style={{ color: "#000000" }} href={"http://raspberrypi:9999/api/project/" + this.props.projectName + "/video/" + this.props.info.name}> {this.props.info.name}</a>
+                                        <a style={{ color: "#000000" }} href={url+"/api/project/" + this.props.projectName + "/video/" + this.props.info.name}> {this.props.info.name}</a>
                                     </div>
                                 </Title>
                             </Col>
@@ -83,7 +84,7 @@ class VideoList extends React.Component {
     }
 
     init=()=>{
-        fetch("http://raspberrypi:9999/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
+        fetch(url+"/api/project/" + this.context.name + "/video?page=1&page_size=99999999")
         .then(res => res.json())
         .then(json => {
            
