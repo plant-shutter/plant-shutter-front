@@ -3,6 +3,7 @@ import shooting from "./icons/shooting.svg"
 import setting from "./icons/setting.svg"
 import logo from "./icons/logo.png"
 import url from "../url"
+import axios from "axios";
 import React from "react";
 import { Image, Row, Col, Divider, Slider, Button, InputNumber, Select, Space, Progress, Typography, List, Popconfirm, message } from 'antd';
 const { Title } = Typography;
@@ -14,39 +15,42 @@ class Home extends React.Component {
     }
     componentDidMount() {
 
-  
-        this.loop()
-        this.looptimer = setInterval(() => {
-            this.loop()
-        }, 3000);
+        this.init()
+
     }
     componentWillUnmount() {
 
         clearInterval(this.looptimer)
     }
 
-    loop = () => {
-        fetch(url+"/api/device/memory")
-            .then(res => res.json())
-            .then(json => {
-                json.data.usedPercent = json.data.usedPercent.toFixed(2)
-                this.setState({
-                    memory: json.data
-                })
-            }).catch((response) => {
-            });
+    init = () => {
+        var now = new Date();
 
+        // 将时间转化为指定格式
+        var year = now.getFullYear();
+        var month = ('0' + (now.getMonth() + 1)).slice(-2);
+        var day = ('0' + now.getDate()).slice(-2);
+        var hours = ('0' + now.getHours()).slice(-2);
+        var minutes = ('0' + now.getMinutes()).slice(-2);
+        var seconds = ('0' + now.getSeconds()).slice(-2);
+        
+        // 设置时区为上海（CST，UTC+8）
+        var timezoneOffset = 8;
+        var timezoneOffsetString = '+' + ('0' + Math.abs(timezoneOffset)).slice(-2) + ':00';
+        
+        var formattedTime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds + timezoneOffsetString;
 
-        fetch(url+"/api/device/disk")
-            .then(res => res.json())
-            .then(json => {
-                json.data.usedPercent = json.data.usedPercent.toFixed(2)
-                this.setState({
-                    dist: json.data
-                })
-            }).catch((response) => {
+        axios({
+            method: 'PUT', // 请求类型
+            url: url+'/api/device/date', // 请求 url
+            data:{
+                "newTime": formattedTime
+            }
+        }).then(response => {
 
-            });
+        }).catch((response) => {
+            
+        })
     }
 
     componentDidUpdate() {
@@ -61,7 +65,7 @@ class Home extends React.Component {
     jumpToAlbum() {
         window.location.href = window.location.origin + '/#/Album';
     }
-    
+
     jumpToSet() {
         window.location.href = window.location.origin + '/#/Set';
     }
@@ -84,7 +88,7 @@ class Home extends React.Component {
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col span={20}><Typography  style={{ textAlign: "center", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>plant-shutter</Typography></Col>
+                                <Col span={20}><Typography style={{ textAlign: "center", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>plant-shutter</Typography></Col>
                                 <Col span={2}></Col>
 
                             </Row>
@@ -94,12 +98,12 @@ class Home extends React.Component {
                     </Col>
                     <Col span={24}>
                         <Row>
-                            <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"} alt="video"></img></Col>
+                            <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url + "/api/device/realtime/video"} alt="video"></img></Col>
                         </Row>
                     </Col>
                 </Row>
 
-                <Divider style={{ margin: "1",marginTop: "86%"  }} orientation="left"></Divider>
+                <Divider style={{ margin: "1", marginTop: "86%" }} orientation="left"></Divider>
                 <Row >
                     <Col span={1}></Col>
                     <Col span={6} style={{ display: 'flex' }}>
