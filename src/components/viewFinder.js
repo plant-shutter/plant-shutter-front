@@ -117,9 +117,6 @@ class ViewFinder extends React.Component {
                     }).catch((response) => {
 
                     });
-
-
-
                 this.setState({
                     UImsg: json.data
                 })
@@ -374,11 +371,15 @@ class ViewFinder extends React.Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={12}>
+                        <Col span={8}>
                             <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.interval * this.state.UImsg.video.fps / 1000}</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景缩时倍数</Typography></Col>
                         </Col>
-                        <Col span={12}>
+                        <Col span={8}>
+                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.interval/ 1000}</Title></Col>
+                            <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景拍摄间隔(秒)</Typography></Col>
+                        </Col>
+                        <Col span={8}>
                             <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>4K|{this.state.UImsg.video.fps}帧</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>视频参数</Typography></Col>
                         </Col>

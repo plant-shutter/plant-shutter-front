@@ -7,7 +7,6 @@ import url from "../url"
 import { globalProjectDataContext } from "./globalProjectData"
 const { Title } = Typography;
 
-
 class ParamSetting extends React.Component {
 
     constructor(props) {
