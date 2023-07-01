@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Row, Col, Divider, Slider, Button, InputNumber, Select, message, Typography } from 'antd';
+import { Row, Col, Divider, Slider, Button, InputNumber, Select, message, Typography, Switch } from 'antd';
 import logo from "./icons/logo.png"
 import rightArray from "./icons/rightArray.svg"
 import url from "../url"
@@ -11,7 +11,7 @@ class ParamSetting extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { JpgQuality: 50, setted: true, RedBalance: 1580, BlueBalance: 1580, ExposureTime: 1000, previousError: 0, integral: 0, para: [], frameRate: 30, NumberOfShootingDays: 6.5, TotalVideoLength: 2.5, PreviewVideoLength: 15, interval: 124800, maxImage: 450 }
+        this.state = { isPreviewVideo: true, JpgQuality: 50, setted: true, RedBalance: 1580, BlueBalance: 1580, ExposureTime: 1000, previousError: 0, integral: 0, para: [], frameRate: 30, NumberOfShootingDays: 6.5, TotalVideoLength: 2.5, PreviewVideoLength: 15, interval: 124800, maxImage: 450 }
     }
 
     componentDidMount() {
@@ -71,12 +71,13 @@ class ParamSetting extends React.Component {
             url: url + '/api/device/config', // 请求 url
             data: datas
         }).then(response => {
-
+            //进一步获取项目数据
             fetch(url + "/api/project/" + this.context.name)
                 .then(res => res.json())
                 .then(json => {
-
+                    console.log(json.data)
                     this.setState({
+                        isPreviewVideo: json.data.video.enable,
                         frameRate: json.data.video.fps,
                         PreviewVideoLength: json.data.video.previewVideoLength,
                         TotalVideoLength: json.data.video.totalVideoLength,
@@ -145,25 +146,7 @@ class ParamSetting extends React.Component {
         window.location.href = window.location.origin + '/#/ViewFinder';
 
     }
-    setProjectParams = () => {
-        let data = {
-            name: this.context.name,
-            camera: true
-        }
-        axios({
-            method: 'PUT', // 请求类型
-            url: url + '/api/project', // 请求 url
-            data: data
-        }).then(response => {
 
-            this.jumpToViewFinder()
-
-        }).catch((response) => {
-            this.info('另一个项目正在拍摄中,无法同时拍摄两个项目')
-        });
-
-
-    }
 
     jumpToProjects() {
 
@@ -235,65 +218,7 @@ class ParamSetting extends React.Component {
         })
     }
 
-    VideoParameterCalculation = () => {
-        let setdata = true
-        let interval = 3000
-        let maxImage = 10
-        interval = 1000 * (this.state.NumberOfShootingDays * 1440) / (this.state.frameRate * this.state.TotalVideoLength)
-        interval = Math.ceil(interval)
-        maxImage = this.state.PreviewVideoLength * this.state.frameRate
 
-        if (maxImage != this.state.maxImage) {
-            this.setState({
-                maxImage: maxImage
-            })
-
-        }
-        if (interval != this.state.interval) {
-            this.setState({
-                interval: interval
-            })
-            if (interval <= 3000 && interval > 300) {
-                this.info('拍摄天数过短且视频总时长过长将影响拍摄效果')
-            }
-            if (interval <= 300) {
-                setdata = false
-                this.setState({
-                    TotalVideoLength: (1440000 * this.state.NumberOfShootingDays) / (300 * this.state.frameRate)
-                })
-                this.info('拍摄天数与视频总时长比例过小,程序已自动调整视频成片总时长')
-            }
-
-        }
-        if (setdata == true) {
-            let data = {
-                "name": this.context.name,
-                "running": false,
-                "video": {
-                    "enable": true,
-                    "fps": this.state.frameRate,
-                    "maxImage": maxImage,
-                    "previewVideoLength": this.state.PreviewVideoLength,
-                    "shootingDays": this.state.NumberOfShootingDays,
-                    "totalVideoLength": this.state.TotalVideoLength,
-                },
-                "interval": interval,
-
-            }
-
-            axios({
-                method: 'PUT', // 请求类型
-                url: url + '/api/project', // 请求 url
-                data: data
-            }).then(response => {
-
-            }).catch((response) => {
-
-
-            });
-        }
-
-    }
 
 
     AutoExposure = (imageData) => {
@@ -355,7 +280,7 @@ class ParamSetting extends React.Component {
     }
 
     AutoParams = () => {
-     
+
         // const img = document.getElementById('originalImage');
         // const canvas = document.createElement('canvas');
         // const context = canvas.getContext('2d');
@@ -511,6 +436,89 @@ class ParamSetting extends React.Component {
         })
     }
 
+    ChangeIsPreviewVideo = () => {
+        this.setState({
+            isPreviewVideo: !this.state.isPreviewVideo
+        })
+    }
+
+    VideoParameterCalculation = () => {
+        let interval = 3000
+        let maxImage = 10
+        interval = 1000 * (this.state.NumberOfShootingDays * 1440) / (this.state.frameRate * this.state.TotalVideoLength)
+        interval = Math.ceil(interval)
+        maxImage = this.state.PreviewVideoLength * this.state.frameRate
+
+        if (maxImage != this.state.maxImage) {
+            this.setState({
+                maxImage: maxImage
+            })
+
+        }
+        if (interval != this.state.interval) {
+            this.setState({
+                interval: interval
+            })
+            if (interval <= 3000 && interval > 300) {
+                this.info('拍摄天数过短且视频总时长过长将影响拍摄效果')
+            }
+            if (interval <= 300) {
+             
+                this.setState({
+                    TotalVideoLength: (1440000 * this.state.NumberOfShootingDays) / (300 * this.state.frameRate)
+                })
+                this.info('拍摄天数与视频总时长比例过小,程序已自动调整视频成片总时长')
+            }
+
+        }
+
+    }
+
+    setProjectParams = () => {
+        let data = {
+            name: this.context.name,
+            camera: true
+        }
+        axios({
+            method: 'PUT', // 请求类型
+            url: url + '/api/project', // 请求 url
+            data: data
+        }).then(response => {
+           
+                let data = {
+                    "name": this.context.name,
+                    "running": false,
+                    "video": {
+                        "enable": this.state.isPreviewVideo,
+                        "fps": this.state.frameRate,
+                        "maxImage": this.state.maxImage,
+                        "previewVideoLength": this.state.PreviewVideoLength,
+                        "shootingDays": this.state.NumberOfShootingDays,
+                        "totalVideoLength": this.state.TotalVideoLength,
+                    },
+                    "interval": this.state.interval,
+    
+                }
+                console.log(data)
+                axios({
+                    method: 'PUT', // 请求类型
+                    url: url + '/api/project', // 请求 url
+                    data: data
+                }).then(response => {
+    
+                }).catch((response) => {
+    
+    
+                });
+            
+            this.jumpToViewFinder()
+
+        }).catch((response) => {
+            this.info('另一个项目正在拍摄中,无法同时拍摄两个项目')
+        });
+
+
+    }
 
     render() {
 
@@ -561,14 +569,14 @@ class ParamSetting extends React.Component {
                         </Row>
                     </Col>
                 </Row>
-
-                <Row style={{ marginTop: "86%" }}>
+                <Divider style={{ margin: "0", marginTop: "86%" }} orientation="left"></Divider>
+                <Row style={{ marginTop: "1%", marginBottom: "3%" }}>
                     <Col span={1}></Col>
-                    <Col span={18}><Typography style={{ textAlign: "left", fontSize: "14px" }}><b>拍摄参数设置</b></Typography></Col>
-                    <Col span={5}><Button style={{ color: "#00C2FF" }} size="small" onClick={this.AutoParams} >自动调整</Button></Col>
+                    <Col span={18}><Typography style={{ textAlign: "left", fontSize: "16px" }}><b>拍摄参数设置</b></Typography></Col>
+                    <Col span={5}><Button style={{ color: "#00C2FF", fontSize: "12px" }} size="small" onClick={this.AutoParams} >自动调整</Button></Col>
 
                 </Row>
-                <Divider style={{ margin: "0", marginTop: "1%" }} orientation="left"></Divider>
+
 
                 <div style={{ marginBottom: '30px' }}>
                     <Row justify="space-around" align="middle">
@@ -661,22 +669,72 @@ class ParamSetting extends React.Component {
                     </Row>
 
                 </div>
-                <Row >
+
+
+
+                <Divider style={{ margin: "0", marginBottom: "2%" }} orientation="left"></Divider>
+                <Row style={{ marginTop: "1%", marginBottom: "3%" }}>
                     <Col span={1}></Col>
-                    <Col span={19}><Typography style={{ textAlign: "left", fontSize: "14px" }}><b>预合成视频设置</b></Typography></Col>
-                    <Col span={4}><Button style={{ color: "#00C2FF" }} size="small" onClick={this.resetVideoParam} >重置</Button></Col>
-
+                    <Col span={17}><Typography style={{ textAlign: "left", fontSize: "16px" }}><b>预览视频</b></Typography></Col>
+                    <Col span={6}>  <Switch size="small" checkedChildren="自动生成" unCheckedChildren="关闭生成" onChange={this.ChangeIsPreviewVideo} checked={this.state.isPreviewVideo} /></Col>
                 </Row>
-                <Divider style={{ margin: "0", marginTop: "1%", marginBottom: "3%" }} orientation="left"></Divider>
 
-                <Row justify="space-around" align="middle" >
-                    <Col span={12}>
+
+
+
+                <Row>
+                    <Col span={2}></Col>
+                    <Col span={10}>
+                        <Row>
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }}>段落长度(秒)</Col>
+                            <Col span={24} justify="space-around" >
+                                <InputNumber min={1} max={300} defaultValue={15} onChange={this.PreviewVideoLengthChange} value={this.state.PreviewVideoLength} disabled={!this.state.isPreviewVideo} />
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+
+                <Divider orientation="left" style={{ margin: "0", marginTop: "5%", marginBottom: "2%" }}></Divider>
+                <Row style={{ marginTop: "1%", marginBottom: "3%" }} >
+                    <Col span={1}></Col>
+                    <Col span={19}><Typography style={{ textAlign: "left", fontSize: "16px" }}><b>拍摄计划</b></Typography></Col>
+                    <Col span={4}><Button style={{ color: "#00C2FF", fontSize: "12px" }} size="small" onClick={this.resetVideoParam} >重置</Button></Col>
+                </Row>
+
+
+                <Row >
+                    <Col span={2}></Col>
+                    <Col span={10}>
                         <Row justify="space-around" align="middle">
-                            <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left", margin: "2%" }} >帧率</Col>
-                            <Col span={2}></Col>
-                            <Col span={22} justify="space-around" >
 
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }} >拍摄时间约(天)</Col>
+                            <Col span={24} justify="space-around">
+                                <InputNumber min={0.001} max={100000} defaultValue={6.5} onChange={this.NumberOfShootingDaysChange} value={this.state.NumberOfShootingDays} />
+                            </Col>
+                        </Row>
+                    </Col>
+
+                    <Col span={2}></Col>
+                    <Col span={10}>
+                        <Row justify="space-around" align="middle">
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }}>视频总时长约(分)</Col>
+                            <Col span={24} justify="space-around" >
+                                <InputNumber min={0.02} max={1000} defaultValue={2.5} onChange={this.TotalVideoLengthChange} value={this.state.TotalVideoLength} />
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col span={24}>&nbsp;</Col>
+                </Row>
+
+                <Row >
+                    <Col span={2}></Col>
+                    <Col span={10}>
+                        <Row >
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }} >帧率</Col>
+                            <Col span={24} justify="space-around" >
                                 <Select
                                     defaultValue='30帧'
                                     value={this.state.frameRate}
@@ -693,43 +751,8 @@ class ParamSetting extends React.Component {
                             </Col>
                         </Row>
                     </Col>
-                    <Col span={12}>
-                        <Row justify="space-around" align="middle">
-                            <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left", margin: "2%" }}>分段预览视频(秒)</Col>
-                            <Col span={2}></Col>
-                            <Col span={22} justify="space-around" >
-                                <InputNumber min={1} max={300} defaultValue={15} onChange={this.PreviewVideoLengthChange} value={this.state.PreviewVideoLength} />
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
+                    <Col span={12}></Col>
 
-                <Row>
-                    <Col span={24}>&nbsp;</Col>
-                </Row>
-
-                <Row justify="space-around" align="middle">
-                    <Col span={12}>
-                        <Row justify="space-around" align="middle">
-                            <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left", margin: "2%" }} >拍摄时间约(天)</Col>
-                            <Col span={2}></Col>
-                            <Col span={22} justify="space-around">
-                                <InputNumber min={0.001} max={100000} defaultValue={6.5} onChange={this.NumberOfShootingDaysChange} value={this.state.NumberOfShootingDays} />
-                            </Col>
-                        </Row>
-                    </Col>
-                    <Col span={12}>
-                        <Row justify="space-around" align="middle">
-                            <Col span={4}></Col>
-                            <Col span={20} style={{ textAlign: "left", margin: "2%" }}>视频成片总时长约(分)</Col>
-                            <Col span={2}></Col>
-                            <Col span={22} justify="space-around" >
-                                <InputNumber min={0.02} max={1000} defaultValue={2.5} onChange={this.TotalVideoLengthChange} value={this.state.TotalVideoLength} />
-                            </Col>
-                        </Row>
-                    </Col>
                 </Row>
 
 
