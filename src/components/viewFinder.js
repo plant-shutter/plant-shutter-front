@@ -88,21 +88,38 @@ class ViewFinder extends React.Component {
             .then(res => res.json())
             .then(json => {
 
-                let cameraDatas = []
-                for (let key in json.data.camera) {
-                    let cameraData = { ID: parseInt(key), value: json.data.camera[key] }
-                    cameraDatas.push(cameraData)
-                }
+                //查询是否有其他项目正在运行
+                fetch(url + "/api/project/running")
+                    .then(res => res.json())
+                    .then(jsonrunning => {
 
-                axios({
-                    method: 'PUT', // 请求类型
-                    url: url + '/api/device/config', // 请求 url
-                    data: cameraDatas
-                }).then(response => {
-                    // console.log(response)
-                }).catch((response) => {
-                    // console.log(response)
-                })
+                        if (jsonrunning.data == undefined) {
+                            //更改设置摄像头硬件参数
+                            let cameraDatas = []
+                            for (let key in json.data.camera) {
+                                let cameraData = { ID: parseInt(key), value: json.data.camera[key] }
+                                cameraDatas.push(cameraData)
+                            }
+
+                            axios({
+                                method: 'PUT', // 请求类型
+                                url: url + '/api/device/config', // 请求 url
+                                data: cameraDatas
+                            }).then(response => {
+                                // console.log(response)
+                            }).catch((response) => {
+                                // console.log(response)
+                            })
+                        } else {
+
+                        }
+
+                    }).catch((response) => {
+
+                    });
+
+
+
                 this.setState({
                     UImsg: json.data
                 })
@@ -319,7 +336,7 @@ class ViewFinder extends React.Component {
                                 <Col span={24}>
                                     <img
                                         id="originalImage"
-                              
+
                                         style={{ width: "100%", height: "100%" }}
                                         src={url + "/api/device/realtime/video"}
                                         alt="video">
