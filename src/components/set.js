@@ -19,7 +19,7 @@ class Set extends React.Component {
         }, 3000);
     }
     componentWillUnmount() {
-
+        window.stop();
         clearInterval(this.looptimer)
     }
 

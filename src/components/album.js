@@ -70,9 +70,11 @@ class Album extends React.Component {
 
     constructor(props) {
         super(props)
+        
         this.state = { albumLists: [], deleteAlbum: false, AlbumToBeDeleted: "" }
     }
     componentDidMount() {
+  
         this.init()
 
     }

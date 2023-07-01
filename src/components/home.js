@@ -19,7 +19,7 @@ class Home extends React.Component {
 
     }
     componentWillUnmount() {
-
+        window.stop();
         clearInterval(this.looptimer)
     }
 

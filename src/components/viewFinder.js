@@ -74,6 +74,7 @@ class ViewFinder extends React.Component {
         }
     }
     componentDidMount() {
+        window.stop();
         this.init()
         this.loop()
         this.looptimer = setInterval(() => {
@@ -172,6 +173,8 @@ class ViewFinder extends React.Component {
 
     }
     componentWillUnmount() {
+
+        window.stop();
 
         clearInterval(this.looptimer)
     }
@@ -376,7 +379,7 @@ class ViewFinder extends React.Component {
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景缩时倍数</Typography></Col>
                         </Col>
                         <Col span={8}>
-                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.interval/ 1000}</Title></Col>
+                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.interval / 1000}</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景拍摄间隔(秒)</Typography></Col>
                         </Col>
                         <Col span={8}>

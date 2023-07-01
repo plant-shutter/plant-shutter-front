@@ -15,7 +15,12 @@ class ParamSetting extends React.Component {
     }
 
     componentDidMount() {
+
         this.init()
+
+    }
+    componentWillUnmount() {
+        window.stop();
 
     }
 
@@ -463,7 +468,7 @@ class ParamSetting extends React.Component {
                 this.info('拍摄天数过短且视频总时长过长将影响拍摄效果')
             }
             if (interval <= 300) {
-             
+
                 this.setState({
                     TotalVideoLength: (1440000 * this.state.NumberOfShootingDays) / (300 * this.state.frameRate)
                 })
@@ -484,33 +489,33 @@ class ParamSetting extends React.Component {
             url: url + '/api/project', // 请求 url
             data: data
         }).then(response => {
-           
-                let data = {
-                    "name": this.context.name,
-                    "running": false,
-                    "video": {
-                        "enable": this.state.isPreviewVideo,
-                        "fps": this.state.frameRate,
-                        "maxImage": this.state.maxImage,
-                        "previewVideoLength": this.state.PreviewVideoLength,
-                        "shootingDays": this.state.NumberOfShootingDays,
-                        "totalVideoLength": this.state.TotalVideoLength,
-                    },
-                    "interval": this.state.interval,
-    
-                }
-                console.log(data)
-                axios({
-                    method: 'PUT', // 请求类型
-                    url: url + '/api/project', // 请求 url
-                    data: data
-                }).then(response => {
-    
-                }).catch((response) => {
-    
-    
-                });
-            
+
+            let data = {
+                "name": this.context.name,
+                "running": false,
+                "video": {
+                    "enable": this.state.isPreviewVideo,
+                    "fps": this.state.frameRate,
+                    "maxImage": this.state.maxImage,
+                    "previewVideoLength": this.state.PreviewVideoLength,
+                    "shootingDays": this.state.NumberOfShootingDays,
+                    "totalVideoLength": this.state.TotalVideoLength,
+                },
+                "interval": this.state.interval,
+
+            }
+            console.log(data)
+            axios({
+                method: 'PUT', // 请求类型
+                url: url + '/api/project', // 请求 url
+                data: data
+            }).then(response => {
+
+            }).catch((response) => {
+
+
+            });
+
             this.jumpToViewFinder()
 
         }).catch((response) => {
@@ -686,41 +691,50 @@ class ParamSetting extends React.Component {
                     <Col span={2}></Col>
                     <Col span={10}>
                         <Row>
-                            <Col span={24} style={{ textAlign: "left", margin: "2%" }}>段落长度(秒)</Col>
-                            <Col span={24} justify="space-around" >
-                                <InputNumber min={1} max={300} defaultValue={15} onChange={this.PreviewVideoLengthChange} value={this.state.PreviewVideoLength} disabled={!this.state.isPreviewVideo} />
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }}>段落长度</Col>
+                            <Col span={17} justify="space-around" >
+                                <InputNumber min={1} max={300} defaultValue={15} onChange={this.PreviewVideoLengthChange} value={this.state.PreviewVideoLength} disabled={!this.state.isPreviewVideo} addonAfter="秒" />
                             </Col>
+                            <Col span={7}></Col>
                         </Row>
                     </Col>
                 </Row>
 
                 <Divider orientation="left" style={{ margin: "0", marginTop: "5%", marginBottom: "2%" }}></Divider>
-                <Row style={{ marginTop: "1%", marginBottom: "3%" }} >
+                <Row style={{ marginTop: "1%" }} >
                     <Col span={1}></Col>
-                    <Col span={19}><Typography style={{ textAlign: "left", fontSize: "16px" }}><b>拍摄计划</b></Typography></Col>
+                    <Col span={5}><Typography style={{ textAlign: "left", fontSize: "16px" }}><b>拍摄计划</b></Typography></Col>
+                    <Col span={14}> </Col>
                     <Col span={4}><Button style={{ color: "#00C2FF", fontSize: "12px" }} size="small" onClick={this.resetVideoParam} >重置</Button></Col>
                 </Row>
-
+                <Row style={{ marginTop: "3%", marginBottom: "3%" }} >
+                    <Col span={2}></Col>
+                    <Col span={22}>
+                        <Typography style={{ color: "red",textAlign: "left", fontSize: "14px" }}>每{this.state.interval / 1000}秒拍摄一帧 | {this.state.interval * this.state.frameRate / 1000}倍率</Typography>
+                    </Col>
+                </Row>
 
                 <Row >
                     <Col span={2}></Col>
                     <Col span={10}>
                         <Row justify="space-around" align="middle">
 
-                            <Col span={24} style={{ textAlign: "left", margin: "2%" }} >拍摄时间约(天)</Col>
-                            <Col span={24} justify="space-around">
-                                <InputNumber min={0.001} max={100000} defaultValue={6.5} onChange={this.NumberOfShootingDaysChange} value={this.state.NumberOfShootingDays} />
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }} >拍摄时长</Col>
+                            <Col span={17} justify="space-around">
+                                <InputNumber min={0.001} max={100000} defaultValue={6.5} onChange={this.NumberOfShootingDaysChange} value={this.state.NumberOfShootingDays} addonAfter="天" />
                             </Col>
+                            <Col span={7}></Col>
                         </Row>
                     </Col>
 
                     <Col span={2}></Col>
                     <Col span={10}>
                         <Row justify="space-around" align="middle">
-                            <Col span={24} style={{ textAlign: "left", margin: "2%" }}>视频总时长约(分)</Col>
-                            <Col span={24} justify="space-around" >
-                                <InputNumber min={0.02} max={1000} defaultValue={2.5} onChange={this.TotalVideoLengthChange} value={this.state.TotalVideoLength} />
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }}>成片时长</Col>
+                            <Col span={17} justify="space-around" >
+                                <InputNumber min={0.02} max={1000} defaultValue={2.5} onChange={this.TotalVideoLengthChange} value={this.state.TotalVideoLength} addonAfter="分" />
                             </Col>
+                            <Col span={7}></Col>
                         </Row>
                     </Col>
                 </Row>
@@ -733,7 +747,7 @@ class ParamSetting extends React.Component {
                     <Col span={2}></Col>
                     <Col span={10}>
                         <Row >
-                            <Col span={24} style={{ textAlign: "left", margin: "2%" }} >帧率</Col>
+                            <Col span={24} style={{ textAlign: "left", margin: "2%" }} >成片帧率</Col>
                             <Col span={24} justify="space-around" >
                                 <Select
                                     defaultValue='30帧'

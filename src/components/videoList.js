@@ -78,7 +78,7 @@ class VideoList extends React.Component {
         }
     }
     componentDidMount() {
-
+        window.stop();
       this.init()
 
     }
