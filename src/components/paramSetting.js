@@ -12,7 +12,7 @@ class ParamSetting extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { JpgQuality:50,setted: true, RedBalance: 1580, BlueBalance: 1580, ExposureTime: 1000, previousError: 0, integral: 0, para: [], frameRate: 30, NumberOfShootingDays: 6.5, TotalVideoLength: 2.5, PreviewVideoLength: 15, interval: 124800, maxImage: 450 }
+        this.state = { JpgQuality: 50, setted: true, RedBalance: 1580, BlueBalance: 1580, ExposureTime: 1000, previousError: 0, integral: 0, para: [], frameRate: 30, NumberOfShootingDays: 6.5, TotalVideoLength: 2.5, PreviewVideoLength: 15, interval: 124800, maxImage: 450 }
     }
 
     componentDidMount() {
@@ -69,19 +69,19 @@ class ParamSetting extends React.Component {
         ]
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/device/config', // 请求 url
+            url: url + '/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
-            fetch(url+"/api/project/" + this.context.name)
+            fetch(url + "/api/project/" + this.context.name)
                 .then(res => res.json())
                 .then(json => {
 
                     this.setState({
-                        frameRate:json.data.video.fps,
-                        PreviewVideoLength:json.data.video.previewVideoLength,
-                        TotalVideoLength:json.data.video.totalVideoLength,
-                        NumberOfShootingDays:json.data.video.shootingDays,
+                        frameRate: json.data.video.fps,
+                        PreviewVideoLength: json.data.video.previewVideoLength,
+                        TotalVideoLength: json.data.video.totalVideoLength,
+                        NumberOfShootingDays: json.data.video.shootingDays,
                     })
                     for (let key in json.data.camera) {
                         if (key == "9963790") {
@@ -113,7 +113,7 @@ class ParamSetting extends React.Component {
                 })
 
             //查询正在拍摄的项目
-            fetch(url+"/api/project/running")
+            fetch(url + "/api/project/running")
                 .then(res => res.json())
 
                 .then(json => {
@@ -153,7 +153,7 @@ class ParamSetting extends React.Component {
         }
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/project', // 请求 url
+            url: url + '/api/project', // 请求 url
             data: data
         }).then(response => {
 
@@ -274,9 +274,9 @@ class ParamSetting extends React.Component {
                     "enable": true,
                     "fps": this.state.frameRate,
                     "maxImage": maxImage,
-                    "previewVideoLength":this.state.PreviewVideoLength,
-                    "shootingDays":this.state.NumberOfShootingDays,
-                    "totalVideoLength":this.state.TotalVideoLength,
+                    "previewVideoLength": this.state.PreviewVideoLength,
+                    "shootingDays": this.state.NumberOfShootingDays,
+                    "totalVideoLength": this.state.TotalVideoLength,
                 },
                 "interval": interval,
 
@@ -284,7 +284,7 @@ class ParamSetting extends React.Component {
 
             axios({
                 method: 'PUT', // 请求类型
-                url: url+'/api/project', // 请求 url
+                url: url + '/api/project', // 请求 url
                 data: data
             }).then(response => {
 
@@ -356,25 +356,29 @@ class ParamSetting extends React.Component {
     }
 
     AutoParams = () => {
+     
+        // const img = document.getElementById('originalImage');
+        // const canvas = document.createElement('canvas');
+        // const context = canvas.getContext('2d');
 
-        const img = document.getElementById('originalImage');
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        // // 设置 canvas 的宽高与图像相同
+        // canvas.width = img.width;
+        // canvas.height = img.height;
 
-        // 设置 canvas 的宽高与图像相同
-        canvas.width = img.width;
-        canvas.height = img.height;
+        // // 将图像绘制到 canvas
+        // context.drawImage(img, 0, 0);
 
-        // 将图像绘制到 canvas
-        context.drawImage(img, 0, 0);
-
-        // 获取图像数据
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        // // 获取图像数据
+        // const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        // this.setState({
+        //     RedBalance: 1580,
+        //     BlueBalance: 1580
+        // })
         this.setState({
-            RedBalance: 1580,
-            BlueBalance: 1580
+            JpgQuality: 80,
+            BlueBalance: 1580,
+            RedBalance: 1580
         })
-        let ExposureData = this.AutoExposure(imageData)
         let datas = [
             {
                 ID: 9963791,
@@ -383,12 +387,17 @@ class ParamSetting extends React.Component {
             {
                 ID: 9963790,
                 value: 1580
+            },
+            {
+                ID: 10291459,
+                value: 80
             }
         ]
-        datas.push(ExposureData)
+        // let ExposureData = this.AutoExposure(imageData)
+        // datas.push(ExposureData)
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/device/config', // 请求 url
+            url: url + '/api/device/config', // 请求 url
             data: datas
         }).then(response => {
             // console.log(response)
@@ -416,7 +425,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/device/config', // 请求 url
+            url: url + '/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -443,7 +452,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/device/config', // 请求 url
+            url: url + '/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -470,7 +479,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/device/config', // 请求 url
+            url: url + '/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -496,7 +505,7 @@ class ParamSetting extends React.Component {
         datas.push(data)
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/device/config', // 请求 url
+            url: url + '/api/device/config', // 请求 url
             data: datas
         }).then(response => {
 
@@ -542,7 +551,14 @@ class ParamSetting extends React.Component {
                     </Col>
                     <Col span={24}>
                         <Row>
-                            <Col span={24}><img id="originalImage" crossOrigin="anonymous" style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"} alt="video"></img></Col>
+                            <Col span={24}>
+                                <img
+                                    id="originalImage"
+                                    style={{ width: "100%", height: "100%" }}
+                                    src={url + "/api/device/realtime/video"}
+                                    alt="video">
+                                </img>
+                            </Col>
                         </Row>
                     </Col>
                 </Row>
@@ -586,7 +602,9 @@ class ParamSetting extends React.Component {
                         <Col span={1}> </Col>
                         <Col span={22}>
                             <Slider
-                                tipFormatter={(value) => `${value / 1000}`}
+                                tooltip={{
+                                    formatter: (value) => `${value / 1000}`
+                                }}
                                 defaultValue={this.state.RedBalance}
                                 value={this.state.RedBalance}
                                 max={7999}
@@ -607,7 +625,9 @@ class ParamSetting extends React.Component {
                         <Col span={1}> </Col>
                         <Col span={22}>
                             <Slider
-                                tipFormatter={(value) => `${value / 1000}`}
+                                tooltip={{
+                                    formatter: (value) => `${value / 1000}`
+                                }}
                                 defaultValue={this.state.BlueBalance}
                                 value={this.state.BlueBalance}
                                 max={7999}
@@ -628,7 +648,9 @@ class ParamSetting extends React.Component {
                         <Col span={1}> </Col>
                         <Col span={22}>
                             <Slider
-                                tipFormatter={(value) => `${value }%`}
+                                tooltip={{
+                                    formatter: (value) => `${value}%`
+                                }}
                                 defaultValue={this.state.JpgQuality}
                                 value={this.state.JpgQuality}
                                 max={100}

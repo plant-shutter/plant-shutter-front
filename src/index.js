@@ -1,14 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
 import { HashRouter } from "react-router-dom";
 
-ReactDOM.render(
-  <HashRouter>
-    <App />
-  </HashRouter>,
-  document.getElementById('root')
-);
 
 
+
+//渲染App到页面
+import {
+  createRoot
+} from 'react-dom/client';
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<HashRouter>
+  <App />
+</HashRouter>);

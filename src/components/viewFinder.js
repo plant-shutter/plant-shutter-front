@@ -84,19 +84,19 @@ class ViewFinder extends React.Component {
 
     init = () => {
         //获取项目参数，并将摄像头参数设置为项目配置
-        fetch(url+"/api/project/" + this.context.name)
+        fetch(url + "/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
-               
-                let cameraDatas=[]
-                for(let key in json.data.camera){
-                    let cameraData={ID:parseInt(key),value:json.data.camera[key]}
+
+                let cameraDatas = []
+                for (let key in json.data.camera) {
+                    let cameraData = { ID: parseInt(key), value: json.data.camera[key] }
                     cameraDatas.push(cameraData)
                 }
-             
+
                 axios({
                     method: 'PUT', // 请求类型
-                    url: url+'/api/device/config', // 请求 url
+                    url: url + '/api/device/config', // 请求 url
                     data: cameraDatas
                 }).then(response => {
                     // console.log(response)
@@ -114,7 +114,7 @@ class ViewFinder extends React.Component {
     loop = () => {
 
 
-        fetch(url+"/api/project/" + this.context.name)
+        fetch(url + "/api/project/" + this.context.name)
             .then(res => res.json())
             .then(json => {
 
@@ -122,7 +122,7 @@ class ViewFinder extends React.Component {
                     UImsg: json.data
                 })
 
-                fetch(url+"/api/project/running")
+                fetch(url + "/api/project/running")
                     .then(res => res.json())
                     .then(jsonrunning => {
                         if (jsonrunning.data == undefined) {
@@ -187,7 +187,7 @@ class ViewFinder extends React.Component {
         }
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/project', // 请求 url
+            url: url + '/api/project', // 请求 url
             data: data
         }).then(response => {
 
@@ -213,7 +213,7 @@ class ViewFinder extends React.Component {
 
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/project', // 请求 url
+            url: url + '/api/project', // 请求 url
             data: data
         }).then(response => {
 
@@ -235,7 +235,7 @@ class ViewFinder extends React.Component {
     handleResetProject = () => {
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/project/' + this.context.name + "/reset", // 请求 url
+            url: url + '/api/project/' + this.context.name + "/reset", // 请求 url
         }).then(response => {
             this.info('重置成功')
             this.init()
@@ -316,7 +316,15 @@ class ViewFinder extends React.Component {
                         </Col>
                         <Col span={24}>
                             <Row>
-                                <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"}alt="video"></img></Col>
+                                <Col span={24}>
+                                    <img
+                                        id="originalImage"
+                              
+                                        style={{ width: "100%", height: "100%" }}
+                                        src={url + "/api/device/realtime/video"}
+                                        alt="video">
+                                    </img>
+                                </Col>
                             </Row>
                         </Col>
                     </Row>
@@ -367,11 +375,11 @@ class ViewFinder extends React.Component {
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景曝光时间(us)</Typography></Col>
                         </Col>
                         <Col span={8}>
-                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["9963791"]/1000}</Title></Col>
+                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["9963791"] / 1000}</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景蓝色增益</Typography></Col>
                         </Col>
                         <Col span={8}>
-                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["9963790"]/1000}</Title></Col>
+                            <Col span={24}> <Title level={3} style={{ textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{this.state.UImsg.camera["9963790"] / 1000}</Title></Col>
                             <Col span={24}> <Typography style={{ textAlign: "center", color: "#BBBBBB", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>场景红色增益</Typography></Col>
                         </Col>
                     </Row>
@@ -428,7 +436,7 @@ class ViewFinder extends React.Component {
                         </Col>
                         <Col span={24}>
                             <Row>
-                                <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"} alt="video"></img></Col>
+                                <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url + "/api/device/realtime/video"} alt="video"></img></Col>
                             </Row>
                         </Col>
                     </Row>

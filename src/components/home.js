@@ -33,23 +33,23 @@ class Home extends React.Component {
         var hours = ('0' + now.getHours()).slice(-2);
         var minutes = ('0' + now.getMinutes()).slice(-2);
         var seconds = ('0' + now.getSeconds()).slice(-2);
-        
+
         // 设置时区为上海（CST，UTC+8）
         var timezoneOffset = 8;
         var timezoneOffsetString = '+' + ('0' + Math.abs(timezoneOffset)).slice(-2) + ':00';
-        
+
         var formattedTime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds + timezoneOffsetString;
 
         axios({
             method: 'PUT', // 请求类型
-            url: url+'/api/device/date', // 请求 url
-            data:{
+            url: url + '/api/device/date', // 请求 url
+            data: {
                 "newTime": formattedTime
             }
         }).then(response => {
 
         }).catch((response) => {
-            
+
         })
     }
 
@@ -98,7 +98,15 @@ class Home extends React.Component {
                     </Col>
                     <Col span={24}>
                         <Row>
-                            <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url + "/api/device/realtime/video"} alt="video"></img></Col>
+                            <Col span={24}>
+                                <img
+                                    id="originalImage"
+                                   
+                                    style={{ width: "100%", height: "100%" }}
+                                    src={url + "/api/device/realtime/video"}
+                                    alt="video">
+                                </img>
+                            </Col>
                         </Row>
                     </Col>
                 </Row>

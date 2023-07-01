@@ -12,7 +12,7 @@ class Set extends React.Component {
     }
     componentDidMount() {
 
-  
+
         this.loop()
         this.looptimer = setInterval(() => {
             this.loop()
@@ -24,7 +24,7 @@ class Set extends React.Component {
     }
 
     loop = () => {
-        fetch(url+"/api/device/memory")
+        fetch(url + "/api/device/memory")
             .then(res => res.json())
             .then(json => {
                 json.data.usedPercent = json.data.usedPercent.toFixed(2)
@@ -35,7 +35,7 @@ class Set extends React.Component {
             });
 
 
-        fetch(url+"/api/device/disk")
+        fetch(url + "/api/device/disk")
             .then(res => res.json())
             .then(json => {
                 json.data.usedPercent = json.data.usedPercent.toFixed(2)
@@ -64,7 +64,7 @@ class Set extends React.Component {
                     <Col span={24}>
                         <div style={{ backgroundColor: "#000000", padding: "1%" }}>
 
-                        <Row justify="space-around" align="middle" >
+                            <Row justify="space-around" align="middle" >
                                 <Col span={2} style={{ display: 'flex' }} onClick={this.jumpToHome} >
                                     <Row justify="space-around" align="middle"  >
                                         <Col span={24} style={{ display: 'flex' }}>
@@ -78,7 +78,7 @@ class Set extends React.Component {
                                     <div style={{ width: "5%" }}>
                                         <img src={rightArray} style={{ width: "100%", height: "100%", display: "flex" }} />
                                     </div>
-                                    <Typography  style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>系统设置</Typography>
+                                    <Typography style={{ textAlign: "left", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px" }}>系统设置</Typography>
 
                                 </Col>
                             </Row>
@@ -87,7 +87,14 @@ class Set extends React.Component {
                     </Col>
                     <Col span={24}>
                         <Row>
-                            <Col span={24}><img style={{ width: "100%", height: "100%" }} src={url+"/api/device/realtime/video"} alt="video"></img></Col>
+                            <Col span={24}>
+                                <img
+                                    id="originalImage"
+                                 
+                                    style={{ width: "100%", height: "100%" }}
+                                    src={url + "/api/device/realtime/video"}
+                                    alt="video">
+                                </img></Col>
                         </Row>
                     </Col>
                 </Row>
@@ -120,7 +127,7 @@ class Set extends React.Component {
                         <Col span={5}></Col>
                     </Row>
                 </Space>
-                <Space direction="vertical" size="small" style={{ display: 'flex' ,marginTop: "2%"}}>
+                <Space direction="vertical" size="small" style={{ display: 'flex', marginTop: "2%" }}>
 
                     <Divider style={{ margin: "0" }} orientation="left">运行</Divider>
                     <Row>
@@ -148,7 +155,7 @@ class Set extends React.Component {
                 </Space>
                 <Divider style={{ margin: "1" }} orientation="left"></Divider>
 
-         
+
             </div>
         )
     }
