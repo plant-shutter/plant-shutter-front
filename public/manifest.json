@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "plant-shutter",
+  "name": "plant-shutter",
   "icons": [
     {
       "src": "favicon.ico",

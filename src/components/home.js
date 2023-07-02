@@ -14,7 +14,7 @@ class Home extends React.Component {
         this.state = { dist: {}, memory: {} }
     }
     componentDidMount() {
-
+        this.enterFullscreen()
         this.init()
 
     }
@@ -22,8 +22,20 @@ class Home extends React.Component {
         window.stop();
         clearInterval(this.looptimer)
     }
-
+    enterFullscreen = () => {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+        }
+    }
     init = () => {
+
         var now = new Date();
 
         // 将时间转化为指定格式
@@ -101,7 +113,7 @@ class Home extends React.Component {
                             <Col span={24}>
                                 <img
                                     id="originalImage"
-                                   
+
                                     style={{ width: "100%", height: "100%" }}
                                     src={url + "/api/device/realtime/video"}
                                     alt="video">

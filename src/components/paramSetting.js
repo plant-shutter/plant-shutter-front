@@ -619,7 +619,7 @@ class ParamSetting extends React.Component {
                                 }}
                                 defaultValue={this.state.RedBalance}
                                 value={this.state.RedBalance}
-                                max={7999}
+                                max={3000}
                                 min={1}
                                 onChange={this.ChangeRedBalance}
                                 onAfterChange={this.AfterChangeRedBalance} />
@@ -642,7 +642,7 @@ class ParamSetting extends React.Component {
                                 }}
                                 defaultValue={this.state.BlueBalance}
                                 value={this.state.BlueBalance}
-                                max={7999}
+                                max={3000}
                                 min={1}
                                 onChange={this.ChangeBlueBalance}
                                 onAfterChange={this.AfterChangeBlueBalance} />
@@ -771,7 +771,7 @@ class ParamSetting extends React.Component {
 
 
                 <Divider style={{ margin: "0", marginTop: "3%", marginBottom: "3%" }} orientation="left"></Divider>
-                <Row style={{ padding: "5%" }} >
+                <Row style={{ padding: "5%" , marginBottom: "100%" }} >
                     <Col span={6}></Col>
                     <Col span={12} style={{ borderRadius: "10px", background: "#E5F4FF" }} onClick={this.setProjectParams}>
                         <div style={{ textAlign: "center", whiteSpace: "nowrap", margin: "5%", color: "#1684FC", background: "#E5F4FF" }}><b>保存设置准备拍摄</b></div>

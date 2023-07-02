@@ -12,11 +12,23 @@ class Set extends React.Component {
     }
     componentDidMount() {
 
-
+        this.enterFullscreen()
         this.loop()
         this.looptimer = setInterval(() => {
             this.loop()
         }, 3000);
+    }
+    enterFullscreen = () => {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+        }
     }
     componentWillUnmount() {
         window.stop();
@@ -108,7 +120,7 @@ class Set extends React.Component {
                         <Col span={1}></Col>
                         <Col span={5}><Progress type="circle" percent={this.state.dist.usedPercent} size={70} /></Col>
                         <Col span={2}></Col>
-                        <Col span={11}>
+                        <Col span={15}>
                             <Space direction="vertical" size="small" style={{ display: 'flex' }}>
                                 <Row >
                                     <Col style={{ margin: "0" }} span={24}>
@@ -124,7 +136,7 @@ class Set extends React.Component {
                             </Space>
 
                         </Col>
-                        <Col span={5}></Col>
+                        <Col span={1}></Col>
                     </Row>
                 </Space>
                 <Space direction="vertical" size="small" style={{ display: 'flex', marginTop: "2%" }}>
@@ -134,7 +146,7 @@ class Set extends React.Component {
                         <Col span={1}></Col>
                         <Col span={5}><Progress type="circle" percent={this.state.memory.usedPercent} size={70} /></Col>
                         <Col span={2}></Col>
-                        <Col span={11}>
+                        <Col span={15}>
                             <Space direction="vertical" size="small" style={{ display: 'flex' }}>
                                 <Row >
                                     <Col style={{ margin: "0" }} span={24}>
@@ -150,7 +162,7 @@ class Set extends React.Component {
                             </Space>
 
                         </Col>
-                        <Col span={5}></Col>
+                        <Col span={1}></Col>
                     </Row>
                 </Space>
                 <Divider style={{ margin: "1" }} orientation="left"></Divider>

@@ -48,9 +48,9 @@ class ProjectLists extends React.Component {
                             <Col span={24}>
                                 <Row>
                                     <Col span={1}></Col>
-                                    <Col span={12}> <Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.date} - {this.props.info.diskUsage}</Typography> </Col>
-                                    <Col span={2}></Col>
-                                    <Col span={9}><Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} ></Typography> </Col>
+                                    <Col span={23}> <Typography style={{ margin: "0", textAlign: "left", color: "#9A9A9A" }} >{this.state.date} - {this.props.info.diskUsage}</Typography> </Col>
+                                 
+                                    
                                 </Row></Col>
                         </Row>
                     </Col>
@@ -69,7 +69,20 @@ class projects extends React.Component {
         this.state = { addproject: false, newProjectName: "", projectsList: [], running: true, checkDeleteName: "", selectListName: "" }
     }
     componentDidMount() {
+        this.enterFullscreen()
         this.init()
+    }
+    enterFullscreen = () => {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+        }
     }
     init =()=>{
         fetch(url+"/api/project")

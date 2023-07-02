@@ -25,7 +25,7 @@ class Recording extends React.Component {
     render() {
         this.W = document.documentElement.clientWidth / 24 * 16
         return (
-            <div style={{ margin: "0px", padding: "0px", marginTop: "20%" }}>
+            <div style={{ margin: "0px", padding: "0px", marginTop: "20%",marginBottom: "100%" }}>
                 <Row>
                     <Col span={4}></Col>
                     <Col span={16}> <VerifyStopRecord ref="verify" success={this.StopRecording} width={this.W}></VerifyStopRecord></Col>
@@ -43,7 +43,7 @@ class StartRecording extends React.Component {
     render() {
         return (
             <div style={{ margin: "0px", padding: "0px" }}>
-                <Row style={{ margin: "0", marginTop: "10%" }}>
+                <Row style={{ margin: "0", marginTop: "10%",marginBottom: "100%" }}>
                     <Col span={9}></Col>
                     <Col span={6} style={{ borderRadius: "10000px", background: "#93D2F3" }} onClick={() => this.props.startREC(this.props.projectname)}>
                         <div style={{ textAlign: "center", margin: "20%", color: "#FFFFFF", background: "#93D2F3", padding: "10%" }}><b>开始拍摄</b></div>
@@ -75,6 +75,7 @@ class ViewFinder extends React.Component {
     }
     componentDidMount() {
         window.stop();
+        this.enterFullscreen()
         this.init()
         this.loop()
         this.looptimer = setInterval(() => {
@@ -82,7 +83,18 @@ class ViewFinder extends React.Component {
         }, 3000);
 
     }
-
+    enterFullscreen = () => {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+        }
+    }
     init = () => {
         //获取项目参数，并将摄像头参数设置为项目配置
         fetch(url + "/api/project/" + this.context.name)

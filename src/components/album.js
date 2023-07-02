@@ -74,9 +74,21 @@ class Album extends React.Component {
         this.state = { albumLists: [], deleteAlbum: false, AlbumToBeDeleted: "" }
     }
     componentDidMount() {
-  
+        this.enterFullscreen()
         this.init()
 
+    }
+    enterFullscreen = () => {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+        }
     }
     init = () => {
         fetch(url+"/api/project")
